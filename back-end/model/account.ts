@@ -18,7 +18,7 @@ export class Account {
     private transactions: Transaction[];
     private users: User[];
     private loans: Loan[];
-    private bank: Bank;
+    // private bank: Bank;
     private budgetgoals: Budgetgoal[];
 
     constructor(account: {
@@ -32,7 +32,7 @@ export class Account {
         transactions: Transaction[];
         users: User[];
         loans: Loan[];
-        bank: Bank;
+        // bank: Bank;
         budgetgoals: Budgetgoal[];
         id?: number;
     }) {
@@ -48,7 +48,7 @@ export class Account {
         this.transactions = account.transactions || [];
         this.users = account.users || [];
         this.loans = account.loans || [];
-        this.bank = account.bank;
+        // this.bank = account.bank;
         this.budgetgoals = account.budgetgoals || [];
     }
 
@@ -96,9 +96,9 @@ export class Account {
         return this.loans;
     }
 
-    getBank(): Bank {
-        return this.bank;
-    }
+    // getBank(): Bank {
+    //     return this.bank;
+    // }
 
     getBudgetgoals(): Budgetgoal[] {
         return this.budgetgoals;

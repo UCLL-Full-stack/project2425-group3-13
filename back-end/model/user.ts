@@ -1,3 +1,5 @@
+import { Account } from "./account";
+
 export class User {
     private id?: number;
     private nationalRegisterNumber: string;
@@ -6,7 +8,7 @@ export class User {
     private phoneNumber: string;
     private email: string;
     private password: string;
-    // private accounts: Account[];
+    private accounts: Account[];
 
     constructor(user: {
         nationalRegisterNumber: string;
@@ -15,6 +17,7 @@ export class User {
         phoneNumber: string;
         email: string;
         password: string;
+        accounts: Account[]
         id?: number;
     }) {
         this.validate(user);
@@ -25,6 +28,7 @@ export class User {
         this.phoneNumber = user.phoneNumber;
         this.email = user.email;
         this.password = user.password;
+        this.accounts = user.accounts;
     }
 
     getId(): number | undefined {
@@ -53,6 +57,10 @@ export class User {
 
     getPassword(): string {
         return this.password;
+    }
+
+    getAccounts(): Account[] {
+        return this.accounts;
     }
 
     validate(user: {
