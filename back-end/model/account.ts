@@ -13,7 +13,7 @@ export class Account {
     private isShared: boolean;
     private startDate: Date;
     private endDate: Date;
-    private isActive: boolean;
+    private status: string;
     private type: string;
     private transactions: Transaction[];
     private users: User[];
@@ -27,7 +27,7 @@ export class Account {
         isShared: boolean;
         startDate: Date;
         endDate: Date;
-        isActive: boolean;
+        status: string;
         type: string;
         transactions: Transaction[];
         users: User[];
@@ -43,7 +43,7 @@ export class Account {
         this.isShared = account.isShared;
         this.startDate = account.startDate;
         this.endDate = account.endDate;
-        this.isActive = account.isActive;
+        this.status = account.status;
         this.type = account.type;
         this.transactions = account.transactions || [];
         this.users = account.users || [];
@@ -76,8 +76,8 @@ export class Account {
         return this.endDate;
     }
 
-    getIsActive(): boolean {
-        return this.isActive;
+    getStatus(): string {
+        return this.status;
     }
 
     getType(): string {
@@ -110,7 +110,7 @@ export class Account {
         isShared: boolean;
         startDate: Date;
         endDate: Date;
-        isActive: boolean;
+        status: string;
         type: string;
         id?: number;
     }) {
