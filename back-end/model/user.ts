@@ -59,7 +59,7 @@ export class User {
         return this.password;
     }
 
-    getAccounts(): Account[] {
+    getAccounts(): Account[] | undefined {
         return this.accounts;
     }
 
