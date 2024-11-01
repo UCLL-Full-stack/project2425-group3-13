@@ -51,3 +51,11 @@ type BudgetgoalInput = {
     isActive: boolean;
     accounts: AccountInput[];
 }
+
+export {
+    UserInput,
+    AccountInput,
+    LoanInput,
+    TransactionInput,
+    BudgetgoalInput
+}
