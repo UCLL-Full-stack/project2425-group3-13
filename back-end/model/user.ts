@@ -1,34 +1,37 @@
-import { Account } from "./account";
+import { Account } from './account';
 
 export class User {
-    private id?: number;
-    private nationalRegisterNumber: string;
-    private name: string;
-    private isAdministrator: boolean;
-    private phoneNumber: string;
-    private email: string;
-    private password: string;
-    private accounts: Account[];
+    public id?: number;
+    public nationalRegisterNumber: string;
+    public name: string;
+    public birthDate: Date;
+    public isAdministrator: boolean;
+    public phoneNumber: string;
+    public email: string;
+    public password: string;
+    public accounts: Account[];
 
     constructor(user: {
+        id?: number;
         nationalRegisterNumber: string;
         name: string;
+        birthDate: Date;
         isAdministrator: boolean;
         phoneNumber: string;
         email: string;
         password: string;
-        accounts: Account[]
-        id?: number;
     }) {
         this.validate(user);
+
         this.id = user.id;
         this.nationalRegisterNumber = user.nationalRegisterNumber;
         this.name = user.name;
+        this.birthDate = user.birthDate;
         this.isAdministrator = user.isAdministrator;
         this.phoneNumber = user.phoneNumber;
         this.email = user.email;
         this.password = user.password;
-        this.accounts = user.accounts;
+        this.accounts = [];
     }
 
     getId(): number | undefined {
@@ -41,6 +44,10 @@ export class User {
 
     getName(): string {
         return this.name;
+    }
+
+    getBirthDate(): Date {
+        return this.birthDate;
     }
 
     getIsAdministrator(): boolean {
@@ -59,18 +66,19 @@ export class User {
         return this.password;
     }
 
-    getAccounts(): Account[] | undefined {
+    getAccounts(): Account[] {
         return this.accounts;
     }
 
     validate(user: {
+        id?: number;
         nationalRegisterNumber: string;
         name: string;
+        birthDate: Date;
         isAdministrator: boolean;
         phoneNumber: string;
         email: string;
         password: string;
-        id?: number;
     }) {
         
         if (!user.nationalRegisterNumber) {
@@ -82,9 +90,10 @@ export class User {
         if (!user.name) {
             throw new Error('Name is required.');
         }
-
-        if (!user.isAdministrator) {
-            throw new Error('Administrator status is required.');
+        if (!user.birthDate) {
+            throw new Error('Birth date is required.');
+        } else if (user.birthDate > new Date()) {
+            throw new Error('Birth date cannot be in the future.');
         }
 
         if (!user.phoneNumber) {
@@ -101,6 +110,16 @@ export class User {
 
         if (!user.password) {
             throw new Error('Password is required.');
+        } else if (user.password.length < 8) {
+            throw new Error('Password must be at least 8 characters long.');
+        } else if (!/[A-Z]/.test(user.password)) {
+            throw new Error('Password must contain at least one uppercase letter.');
+        } else if (!/[a-z]/.test(user.password)) {
+            throw new Error('Password must contain at least one lowercase letter.');
+        } else if (!/[0-9]/.test(user.password)) {
+            throw new Error('Password must contain at least one number.');
+        } else if (!/[!@#\$%\^&\*]/.test(user.password)) {
+            throw new Error('Password must contain at least one special character (!@#$%^&*).');
         }
     }
 
@@ -118,7 +137,7 @@ export class User {
     }
 
     emailPattern(email: string): boolean  {
-        const emailPattern = /^([a-zA-Z0-9])*\.?([a-zA-Z0-9])*\@([a-zA-Z])*\.([a-zA-Z])*$/
+        const emailPattern = /^[a-zA-Z0-9._%+-]+@[a-zA-Z0-9.-]+\.[a-zA-Z]{2,}$/;
 
         return emailPattern.test(email);
     }

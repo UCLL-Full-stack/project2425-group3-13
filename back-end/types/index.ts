@@ -1,61 +1,45 @@
 type UserInput = {
-    id?: number;    
+    id?: number;
     nationalRegisterNumber: string;
     name: string;
+    birthDate: Date;
     isAdministrator: boolean;
     phoneNumber: string;
     email: string;
     password: string;
-    accounts: AccountInput[];  
-}
+};
 
 type AccountInput = {
     id?: number;
-    accountNumber: string;
-    balance: number;
+    accountNumber?: string;
+    balance?: number;
     isShared: boolean;
-    startDate: Date;
-    endDate: Date;
-    isActive: boolean;
+    startDate?: Date;
+    endDate?: Date | null;
+    status?: string;
     type: string;
-    transactions: TransactionInput[];
+    transactions?: TransactionInput[];
     users: UserInput[];
-    loans: LoanInput[];
-    // bank: Bank;
-    budgetgoals: BudgetgoalInput[];
-}
-
-type LoanInput = {
-    id?: number; 
-    type: string; 
-    amount: number; 
-    startDate: Date; 
-    endDate: Date; 
-    accounts: AccountInput[]
-}
+    budgetgoals?: BudgetgoalInput[];
+};
 
 type TransactionInput = {
     id?: number;
-    referenceNumber: string;
-    date: Date;
+    referenceNumber?: string;
+    date?: Date;
     amount: number;
     currency: string;
     type: string;
-}
+    account: AccountInput;
+};
 
 type BudgetgoalInput = {
     id?: number;
-    goalName: string;
-    targetAmount: number;
-    currentAmount: number;
-    isActive: boolean;
-    accounts: AccountInput[];
-}
+    name: string;
+    amount: number;
+    startDate: Date;
+    endDate: Date;
+    account: AccountInput;
+};
 
-export {
-    UserInput,
-    AccountInput,
-    LoanInput,
-    TransactionInput,
-    BudgetgoalInput
-}
+export { UserInput, AccountInput, TransactionInput, BudgetgoalInput };

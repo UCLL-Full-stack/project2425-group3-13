@@ -1,55 +1,37 @@
-import { Bank } from './bank';
 import { User } from './user';
 import { Budgetgoal } from './budgetgoal';
 import { Loan } from './loan';
 import { Transaction } from './transaction';
-import { Income } from './income';
-import { Expense } from './expense';
 
 export class Account {
-    private id?: number;
-    private accountNumber: string;
-    private balance: number;
-    private isShared: boolean;
-    private startDate: Date;
-    private endDate: Date;
-    private status: string;
-    private type: string;
-    private transactions: Transaction[];
-    private users: User[];
-    private loans: Loan[];
-    // private bank: Bank;
-    private budgetgoals: Budgetgoal[];
+    public id?: number;
+    public accountNumber: string;
+    public balance: number;
+    public isShared: boolean;
+    public startDate: Date;
+    public endDate: Date | null;
+    public status: string;
+    public type: string;
+    public transactions: Transaction[];
+    public users: User[];
+    // public loans: Loan[];
+    public budgetgoals: Budgetgoal[];
 
-    constructor(account: {
-        accountNumber: string;
-        balance: number;
-        isShared: boolean;
-        startDate: Date;
-        endDate: Date;
-        status: string;
-        type: string;
-        transactions: Transaction[];
-        users: User[];
-        loans: Loan[];
-        // bank: Bank;
-        budgetgoals: Budgetgoal[];
-        id?: number;
-    }) {
+    constructor(account: { id?: number; isShared: boolean; type: string; users: User[] }) {
         this.validate(account);
+
         this.id = account.id;
-        this.accountNumber = account.accountNumber;
-        this.balance = account.balance;
-        this.isShared = account.isShared;
-        this.startDate = account.startDate;
-        this.endDate = account.endDate;
-        this.status = account.status;
         this.type = account.type;
-        this.transactions = account.transactions || [];
-        this.users = account.users || [];
-        this.loans = account.loans || [];
-        // this.bank = account.bank;
-        this.budgetgoals = account.budgetgoals || [];
+        this.accountNumber = this.generateAccountNumber();
+        this.balance = 0;
+        this.isShared = account.isShared;
+        this.startDate = new Date();
+        this.endDate = null;
+        this.status = 'Active';
+        this.transactions = [];
+        this.users = account.users;
+        // this.loans = [];
+        this.budgetgoals = [];
     }
 
     getId(): number | undefined {
@@ -72,7 +54,7 @@ export class Account {
         return this.startDate;
     }
 
-    getEndDate(): Date {
+    getEndDate(): Date | null {
         return this.endDate;
     }
 
@@ -92,39 +74,28 @@ export class Account {
         return this.users;
     }
 
-    getLoans(): Loan[] {
-        return this.loans;
-    }
-
-    // getBank(): Bank {
-    //     return this.bank;
+    // getLoans(): Loan[] {
+    //     return this.loans;
     // }
 
     getBudgetgoals(): Budgetgoal[] {
         return this.budgetgoals;
     }
 
-    validate(account: {
-        accountNumber: string;
-        balance: number;
-        isShared: boolean;
-        startDate: Date;
-        endDate: Date;
-        status: string;
-        type: string;
-        id?: number;
-    }) {
-        if (!account.accountNumber) {
-            throw new Error('Account number is required.');
-        }
-        if (!account.balance) {
-            throw new Error('Balance is required.');
-        }
-        if (!account.startDate) {
-            throw new Error('Start date is required.');
+    validate(account: { isShared: boolean; type: string; id?: number }) {
+        if (account.isShared === undefined) {
+            throw new Error('Is shared is required.');
         }
         if (!account.type) {
             throw new Error('Type is required.');
         }
+    }
+
+    generateAccountNumber(): string {
+        const today = new Date().toISOString().split('T')[0].replace(/-/g, '');
+        const type = this.type.substring(0, 3).toUpperCase();
+        const randomNumbers = Math.floor(100 + Math.random() * 900);
+
+        return `${today}-${type}-${randomNumbers}`;
     }
 }

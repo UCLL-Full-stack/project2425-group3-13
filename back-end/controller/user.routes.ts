@@ -1,56 +1,103 @@
 /**
  * @swagger
- *   components:
+ * components:
+ *    securitySchemes:
+ *     bearerAuth:
+ *       type: http
+ *       scheme: bearer
+ *       bearerFormat: JWT
  *    schemas:
  *      User:
- *          type: object
- *          properties:
- *            id:
- *              type: number
- *              format: int64
- *            nationalRegisterNumber:
- *              type: string
- *            name:
- *              type: string
- *            isAdministrator:
- *              type: boolean
- *            phoneNumber:
- *              type: string
- *            email:
- *              type: string
- *            password:
- *              type: string
- *            accounts:
- *              type: array
- *              items:
- *                  $ref: '#/components/schemas/Account'
+ *        type: object
+ *        properties:
+ *          id:
+ *            type: number
+ *            format: int64
+ *          nationalRegisterNumber:
+ *            type: string
+ *          name:
+ *            type: string
+ *          birthDate:
+ *            type: string
+ *            format: date
+ *          isAdministrator:
+ *            type: boolean
+ *          phoneNumber:
+ *            type: string
+ *          email:
+ *            type: string
+ *          password:
+ *            type: string
+ *          accounts:
+ *            type: array
+ *            items:
+ *              $ref: '#/components/schemas/Account'
  *      UserInput:
- *          type: object
- *          properties:
- *            nationalRegisterNumber:
- *              type: string
- *            name:
- *              type: string
- *            isAdministrator:
- *              type: boolean
- *            phoneNumber:
- *              type: string
- *            email:
- *              type: string
- *            password:
- *              type: string
+ *        type: object
+ *        properties:
+ *          nationalRegisterNumber:
+ *            type: string
+ *          name:
+ *            type: string
+ *          birthDate:
+ *            type: string
+ *            format: date
+ *          isAdministrator:
+ *            type: boolean
+ *          phoneNumber:
+ *            type: string
+ *          email:
+ *            type: string
+ *          password:
+ *            type: string
  */
+
 import express, { NextFunction, Request, Response } from 'express';
 import userService from '../service/user.service';
-import { UserInput } from '../types';
+import { UserInput } from '../types/index';
 
 const userRouter = express.Router();
 
 /**
  * @swagger
- * /user:
+ * /users:
  *   post:
- *     summary: Create new user.
+ *     summary: Create a new user
+ *     requestBody:
+ *       required: true
+ *       content:
+ *         application/json:
+ *           schema:
+ *             $ref: '#/components/schemas/UserInput'
+ *     responses:
+ *       200:
+ *         description: The user was successfully created
+ *         content:
+ *           application/json:
+ *             schema:
+ *               $ref: '#/components/schemas/UserInput'
+ *       400:
+ *         description: The user could not be created
+ *         content:
+ *           application/json:
+ *             schema:
+ *               $ref: '#/components/schemas/User'
+ */
+userRouter.post('/', (req: Request, res: Response, next: NextFunction) => {
+    try {
+        const user = <UserInput>req.body;
+        const result = userService.createUser(user);
+        res.status(200).json(result);
+    } catch (error) {
+        next(error);
+    }
+});
+
+/**
+ * @swagger
+ * /users/login:
+ *   post:
+ *     summary: Get a user by email and password
  *     requestBody:
  *       required: true
  *       content:
@@ -58,40 +105,34 @@ const userRouter = express.Router();
  *           schema:
  *             type: object
  *             properties:
- *               nationalRegisterNumber:
- *                 type: string
- *                 description: The nationalregisternumber of the user.
- *               name:
- *                 type: string
- *                 description: The actual name of the user.
- *               isAdministrator:
- *                 type: boolean
- *                 description: Is the user administrator or not.
- *               phoneNumber:
- *                 type: string
- *                 description: The phonenumber of the user.
  *               email:
  *                 type: string
- *                 description: The email of the user.
+ *                 description: The user's email
  *               password:
  *                 type: string
- *                 description: The password of the user.
+ *                 description: The user's password
  *     responses:
  *       200:
- *         description: JSON consisting of the newly created user object.
+ *         description: The user was successfully retrieved
  *         content:
  *           application/json:
  *             schema:
- *                 $ref: '#/components/schemas/User'
+ *               $ref: '#/components/schemas/User'
+ *       400:
+ *         description: The user could not be retrieved
+ *         content:
+ *           application/json:
+ *             schema:
+ *               $ref: '#/components/schemas/User'
  */
-userRouter.post('/', (req: Request, res: Response, next: NextFunction) => {
+userRouter.get('/login', (req: Request, res: Response, next: NextFunction) => {
     try {
-        const user = <UserInput>req.body; 
-        const result = userService.createUser(user);
+        const { email, password } = req.body;
+        const result = userService.getUserByEmailAndPassword(email, password);
         res.status(200).json(result);
-    } catch (error:any) {
+    } catch (error) {
         next(error);
     }
 });
 
-export default userRouter;
+export { userRouter };

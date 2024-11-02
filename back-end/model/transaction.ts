@@ -1,3 +1,5 @@
+import { Account } from './account';
+
 export abstract class Transaction {
     private id?: number;
     private referenceNumber: string;
@@ -5,23 +7,23 @@ export abstract class Transaction {
     private amount: number;
     private currency: string;
     private type: string;
-    // private account: Account;
+    private account: Account;
 
     constructor(transaction: {
-        referenceNumber: string;
-        date: Date;
         amount: number;
         currency: string;
         type: string;
+        account: Account;
         id?: number;
     }) {
         this.validate(transaction);
         this.id = transaction.id;
-        this.referenceNumber = transaction.referenceNumber;
-        this.date = transaction.date;
+        this.type = transaction.type;
+        this.account = transaction.account;
+        this.date = new Date();
+        this.referenceNumber = this.generateReferenceNumber();
         this.amount = transaction.amount;
         this.currency = transaction.currency;
-        this.type = transaction.type;
     }
 
     getId(): number | undefined {
@@ -48,38 +50,33 @@ export abstract class Transaction {
         return this.type;
     }
 
-    validate(transaction: {
-        referenceNumber: string;
-        date: Date;
-        amount: number;
-        currency: string;
-        type: string;
-        id?: number;
-    }) {
-        if (!transaction.referenceNumber) {
-            throw new Error('Reference number is required.');
+    getAccount(): Account {
+        return this.account;
+    }
+
+    validate(transaction: { amount: number; currency: string; type: string; id?: number }) {
+        if (transaction.amount <= 0) {
+            throw new Error('Amount must be greater than 0.');
         }
-        if (!transaction.date) {
-            throw new Error('Date is required.');
+        if (
+            transaction.currency !== 'USD' &&
+            transaction.currency !== 'EUR' &&
+            transaction.currency !== 'GBP'
+        ) {
+            throw new Error('Currency must be either USD, EUR or GBP.');
         }
-        if (!transaction.amount) {
-            throw new Error('Amount is required.');
-        }
-        if (!transaction.currency) {
-            throw new Error('Currency is required.');
-        }
-        if (!transaction.type) {
-            throw new Error('Type is required.');
+        if (transaction.type !== 'income' && transaction.type !== 'expense') {
+            throw new Error('Type must be either income or expense.');
         }
     }
 
-    // makeTransaction(
-    //     referenceNumber: string,
-    //     date: Date,
-    //     amount: number,
-    //     currency: string,
-    //     type: string
-    // ) {
-    //
-    // }
+    generateReferenceNumber(): string {
+        const lastThreeNumbers = this.account.getAccountNumber().slice(-3).split('').join(' ');
+        const firstTwoLettType = this.type.substring(0, 3).toUpperCase();
+        const year = this.date.getUTCFullYear().toString();
+        const uniqueNumber =
+            Date.now().toString().slice(-3) + Math.random().toString().substring(2, 5);
+        const referenceNumber = `${firstTwoLettType}-${lastThreeNumbers}-${year}-${uniqueNumber}`;
+        return referenceNumber;
+    }
 }

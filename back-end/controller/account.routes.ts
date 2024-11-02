@@ -1,89 +1,115 @@
 /**
  * @swagger
- *   components:
- *    schemas:
- *      Account:
- *          type: object
- *          properties:
- *            id:
- *              type: number
- *              format: int64
- *            accountNumber:
- *              type: string
- *            balance:
- *              type: string
- *            isShared:
- *              type: boolean
- *            startDate:
- *              type: string
- *              format: date-time
- *            endDate:
- *              type: string
- *              format: date-time 
- *            status:
- *              type: string
- *            users:
- *              type: array
- *              properties:
- *                  id:
- *                      type: number
- *                      formati: int64
- *      AccountInput:
- *          type: object
- *          properties:
- *            accountNumber:
- *              type: string
- *            balance:
- *              type: string
- *            isShared:
- *              type: boolean
- *            startDate:
- *              type: string
- *              format: date-time
- *            endDate:
- *              type: string
- *              formate: date-time 
- *            status:
- *              type: string
- *            users:
- *              type: array
- *              items:
- *                  $ref: '#/components/schemas/User'
+ * components:
+ *   securitySchemes:
+ *     bearerAuth:
+ *       type: http
+ *       scheme: bearer
+ *       bearerFormat: JWT
+ *   schemas:
+ *     AccountInput:
+ *       type: object
+ *       properties:
+ *         isShared:
+ *           type: boolean
+ *         type:
+ *           type: string
+ *         users:
+ *           type: array
+ *           items:
+ *             type: object
+ *             properties:
+ *               nationalRegisterNumber:
+ *                 type: string
+ *     Account:
+ *       type: object
+ *       properties:
+ *         id:
+ *           type: number
+ *           format: int64
+ *         accountNumber:
+ *           type: string
+ *         balance:
+ *           type: number
+ *         isShared:
+ *           type: boolean
+ *         startDate:
+ *           type: string
+ *           format: date-time
+ *         endDate:
+ *           type: string
+ *           format: date-time
+ *           nullable: true
+ *         status:
+ *           type: string
+ *         type:
+ *           type: string
+ *         transactions:
+ *           type: array
+ *           items:
+ *             $ref: '#/components/schemas/Transaction'
+ *         users:
+ *           type: array
+ *           items:
+ *             $ref: '#/components/schemas/User'
+ *         budgetgoals:
+ *           type: array
+ *           items:
+ *             $ref: '#/components/schemas/Budgetgoal'
  */
 import express, { NextFunction, Request, Response } from 'express';
 import accountService from '../service/account.service';
+import userService from '../service/user.service';
+import { AccountInput, UserInput } from '../types/index';
 
 const accountRouter = express.Router();
 
 /**
  * @swagger
- * /account/{id}:
- *   get:
- *     summary: Get account by id.
+ * /users/{email}/accounts:
+ *   post:
+ *     summary: Create a new account
  *     parameters:
  *       - in: path
- *         name: id
+ *         name: email
+ *         required: true
  *         schema:
- *           type: integer
- *           format: int64
- *           required: true
- *           description: The lecturer id.
+ *           type: string
+ *         description: The user's email
+ *     requestBody:
+ *       required: true
+ *       content:
+ *         application/json:
+ *           schema:
+ *             $ref: '#/components/schemas/AccountInput'
  *     responses:
  *       200:
- *         description: JSON consisting of an account object
+ *         description: The account was successfully created
  *         content:
  *           application/json:
  *             schema:
- *                 $ref: '#/components/schemas/Account'
+ *               $ref: '#/components/schemas/Account'
+ *       400:
+ *         description: The account could not be created
+ *         content:
+ *           application/json:
+ *             schema:
+ *               $ref: '#/components/schemas/Account'
  */
-accountRouter.get('/:id', (req: Request, res: Response, next: NextFunction) => {
+accountRouter.post('/users/:email/accounts', (req: Request, res: Response, next: NextFunction) => {
     try {
-        const id = Number(req.params.id);
-        const account = accountService.getAccountById({ id });
-        res.status(200).json(account);
-    } catch(error: any) {
+        const { email } = req.params;
+        const account = <AccountInput>req.body;
+
+        const currentUser = userService.getUserByEmail(email);
+        if (!currentUser) {
+            throw new Error('User not found');
+        }
+        const result = accountService.createAccount(account, currentUser);
+        res.status(200).json(result);
+    } catch (error) {
         next(error);
     }
 });
 
-export default accountRouter;
+export { accountRouter };
