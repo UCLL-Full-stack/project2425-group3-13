@@ -42,4 +42,4 @@ const getAccountById = ({ id }: { id: number}): Account => {
     return account;
 }
 
-export default { createAccount };
+export default { createAccount, getAccountById };
