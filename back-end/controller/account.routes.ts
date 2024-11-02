@@ -112,4 +112,34 @@ accountRouter.post('/users/:email/accounts', (req: Request, res: Response, next:
     }
 });
 
+/**
+ * @swagger
+ * /account/{id}:
+ *   get:
+ *     summary: Get account by id.
+ *     parameters:
+ *       - in: path
+ *         name: id
+ *         schema:
+ *           type: integer
+ *           format: int64
+ *           required: true
+ *           description: The lecturer id.
+ *     responses:
+ *       200:
+ *         description: JSON consisting of an account object
+ *         content:
+ *           application/json:
+ *             schema:
+ *                 $ref: '#/components/schemas/Account'
+ */
+accountRouter.get('/:id', (req: Request, res: Response, next: NextFunction) => {
+    try {
+        const id = Number(req.params.id);
+        const account = accountService.getAccountById({ id });
+        res.status(200).json(account);
+    } catch(error: any) {
+        next(error);
+    }
+});
 export { accountRouter };
