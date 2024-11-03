@@ -3,7 +3,7 @@ import { User } from '../model/user';
 
 const users: User[] = [
     new User({
-        nationalRegisterNumber: '99.01.01-123.45', // Example valid NRN
+        nationalRegisterNumber: '99.01.01-123.45',
         name: 'John Doe',
         birthDate: new Date('1990-01-01'),
         isAdministrator: false,

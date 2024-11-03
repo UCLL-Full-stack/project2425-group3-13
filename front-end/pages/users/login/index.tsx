@@ -26,8 +26,9 @@ const LoginUser: React.FC = () => {
     // }, [user]);
 
     const getUserByEmailAndPassword = async () => {
+        console.log(credentials);
         const user = await UserService.getUserByEmailAndPassword(credentials);
-        if (user) {
+        if (user.email === credentials.email && user.password === credentials.password) {
             alert("Login successful!");
         } else {
             alert("Invalid email or password.");

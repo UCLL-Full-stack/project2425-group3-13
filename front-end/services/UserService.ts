@@ -14,9 +14,9 @@ const getUserByEmailAndPassword = async (credentials: Authentication): Promise<U
     const response = await fetch(process.env.NEXT_PUBLIC_API_URL + "/users/login", {
         method: "POST",
         headers: {
-            "Contenty-Type": "application/json", 
+            "Content-Type": "application/json", 
         },
-        body: JSON.stringify({ credentials }),
+        body: JSON.stringify(credentials),
     });
 
     // if (!response.ok) {
