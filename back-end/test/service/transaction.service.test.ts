@@ -10,14 +10,14 @@ jest.mock('../../repository/account.db');
 jest.mock('../../repository/transaction.db');
 jest.mock('../../repository/user.db');
 
-describe('Account Service Tests', () => {
+describe('Transaction Service Tests', () => {
     beforeEach(() => {
         jest.clearAllMocks();
     });
 
     describe('createExpense', () => {
-        it('should create an expense successfully (happy path)', async () => {
-            // Arrange
+        test('given: valid values for expense, when: creating an expense, then: expense is created with those values', async () => {
+            // Given
             const sourceAccount = new Account({
                 id: 1,
                 accountNumber: '20241104-SAV-370',
@@ -38,36 +38,35 @@ describe('Account Service Tests', () => {
                 amount: 50,
                 currency: 'EUR',
                 type: 'expense',
-                sourceAccount: sourceAccount,
-                destinationAccount: destinationAccount,
+                sourceAccount,
+                destinationAccount,
             });
-
             (accountDb.getAccountByAccountNumber as jest.Mock).mockResolvedValueOnce(sourceAccount);
             (accountDb.getAccountByAccountNumber as jest.Mock).mockResolvedValueOnce(
                 destinationAccount
             );
             (transactionDb.createTransaction as jest.Mock).mockResolvedValue(expenseTransaction);
 
-            // Act
+            // When
             const result = await transactionService.createExpense({
                 amount: 50,
                 currency: 'EUR',
-                sourceAccountNumber: '1234',
-                destinationAccountNumber: '5678',
+                sourceAccountNumber: '20241104-SAV-370',
+                destinationAccountNumber: '20241104-SAV-371',
                 type: 'expense',
             });
 
-            // Assert
+            // Then
             expect(accountDb.getAccountByAccountNumber).toHaveBeenCalledTimes(2);
             expect(transactionDb.createTransaction).toHaveBeenCalledTimes(2);
             expect(result).toEqual(expenseTransaction);
         });
 
-        it('should throw an error if source account is not found (unhappy path)', async () => {
-            // Arrange
+        test('given: source account does not exist, when: creating an expense, then: error is thrown', async () => {
+            // Given
             (accountDb.getAccountByAccountNumber as jest.Mock).mockResolvedValueOnce(null);
 
-            // Act & Assert
+            // When & Then
             await expect(
                 transactionService.createExpense({
                     amount: 50,
@@ -79,8 +78,8 @@ describe('Account Service Tests', () => {
             ).rejects.toThrowError('Source account with account number 1234 not found.');
         });
 
-        it('should throw an error if destination account is not found (unhappy path)', async () => {
-            // Arrange
+        test('given: destination account does not exist, when: creating an expense, then: error is thrown', async () => {
+            // Given
             const sourceAccount = new Account({
                 id: 1,
                 accountNumber: '20241104-SAV-370',
@@ -92,7 +91,7 @@ describe('Account Service Tests', () => {
             (accountDb.getAccountByAccountNumber as jest.Mock).mockResolvedValueOnce(sourceAccount);
             (accountDb.getAccountByAccountNumber as jest.Mock).mockResolvedValueOnce(null);
 
-            // Act & Assert
+            // When & Then
             await expect(
                 transactionService.createExpense({
                     amount: 50,
@@ -106,8 +105,8 @@ describe('Account Service Tests', () => {
     });
 
     describe('getTransactionsAccountId', () => {
-        it('should return transactions by account ID (happy path)', async () => {
-            // Arrange
+        test('given: valid account ID, when: fetching transactions, then: transactions are returned', async () => {
+            // Given
             const sourceAccount = new Account({
                 id: 1,
                 accountNumber: '20241104-SAV-370',
@@ -129,35 +128,34 @@ describe('Account Service Tests', () => {
                     amount: 50,
                     currency: 'EUR',
                     type: 'expense',
-                    sourceAccount: sourceAccount,
-                    destinationAccount: destinationAccount,
+                    sourceAccount,
+                    destinationAccount,
                 }),
                 new Transaction({
                     amount: 50,
                     currency: 'EUR',
                     type: 'income',
-                    sourceAccount: sourceAccount,
-                    destinationAccount: destinationAccount,
+                    sourceAccount,
+                    destinationAccount,
                 }),
             ];
-
             (accountDb.getAccountById as jest.Mock).mockResolvedValue(sourceAccount);
             (transactionDb.getTransactionsByAccount as jest.Mock).mockResolvedValue(transactions);
 
-            // Act
+            // When
             const result = await transactionService.getTransactionsAccountId(1);
 
-            // Assert
+            // Then
             expect(accountDb.getAccountById).toHaveBeenCalledTimes(1);
             expect(transactionDb.getTransactionsByAccount).toHaveBeenCalledTimes(1);
             expect(result).toEqual(transactions);
         });
 
-        it('should throw an error if account is not found (unhappy path)', async () => {
-            // Arrange
+        test('given: invalid account ID, when: fetching transactions, then: error is thrown', async () => {
+            // Given
             (accountDb.getAccountById as jest.Mock).mockResolvedValue(null);
 
-            // Act & Assert
+            // When & Then
             await expect(transactionService.getTransactionsAccountId(1)).rejects.toThrowError(
                 'Account with account number 1 not found.'
             );
@@ -165,8 +163,8 @@ describe('Account Service Tests', () => {
     });
 
     describe('getTransactionsByUserId', () => {
-        it('should return transactions for a user ID (happy path)', async () => {
-            // Arrange
+        test('given: valid user ID, when: fetching transactions, then: transactions are returned', async () => {
+            // Given
             const user = { id: 1, getAccounts: jest.fn().mockReturnValue([{ id: 1 }, { id: 2 }]) };
             const sourceAccount = new Account({
                 id: 1,
@@ -190,35 +188,35 @@ describe('Account Service Tests', () => {
                     amount: 50,
                     currency: 'EUR',
                     type: 'expense',
-                    sourceAccount: sourceAccount,
-                    destinationAccount: destinationAccount,
+                    sourceAccount,
+                    destinationAccount,
                 }),
                 new Transaction({
                     id: 2,
                     amount: 50,
                     currency: 'EUR',
                     type: 'income',
-                    sourceAccount: sourceAccount,
-                    destinationAccount: destinationAccount,
+                    sourceAccount,
+                    destinationAccount,
                 }),
             ];
             (userDb.getUserById as jest.Mock).mockResolvedValue(user);
             (transactionDb.getTransactionsByAccount as jest.Mock).mockResolvedValue(transactions);
 
-            // Act
+            // When
             const result = await transactionService.getTransactionsByUserId(1);
 
-            // Assert
+            // Then
             expect(userDb.getUserById).toHaveBeenCalledTimes(1);
             expect(transactionDb.getTransactionsByAccount).toHaveBeenCalledTimes(2);
             expect(result).toEqual(transactions);
         });
 
-        it('should throw an error if user is not found (unhappy path)', async () => {
-            // Arrange
+        test('given: invalid user ID, when: fetching transactions, then: error is thrown', async () => {
+            // Given
             (userDb.getUserById as jest.Mock).mockResolvedValue(null);
 
-            // Act & Assert
+            // When & Then
             await expect(transactionService.getTransactionsByUserId(1)).rejects.toThrowError(
                 'User with id 1 not found.'
             );
