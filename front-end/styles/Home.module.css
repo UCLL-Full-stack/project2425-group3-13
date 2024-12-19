@@ -50,6 +50,9 @@
   color: #333;
   margin-bottom: 1rem;
 }
+.main h2 {
+  margin: 1rem;
+}
 .main div {
   max-width: 800px;
   text-align: center;
@@ -137,6 +140,13 @@
 .form button:hover {
   background-color: #005bb5;
 }
+.form select {
+  margin-bottom: 16px;
+  padding: 10px;
+  border: 1px solid #ccc;
+  border-radius: 4px;
+  font-size: 16px;
+}
 
 .userDetails {
   padding: 1rem;
@@ -151,7 +161,8 @@
   width: 100%;
   border-collapse: collapse;
 }
-.userDetails table th, .userDetails table td {
+.userDetails table th,
+.userDetails table td {
   border: 1px solid #cccccc;
   padding: 0.5rem;
 }
@@ -172,7 +183,8 @@
   width: 100%;
   border-collapse: collapse;
 }
-.accountOverview table th, .accountOverview table td {
+.accountOverview table th,
+.accountOverview table td {
   border: 1px solid #cccccc;
   padding: 0.5rem;
 }

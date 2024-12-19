@@ -101,11 +101,44 @@ const loginUser = async (credentials: Authentication) => {
   return userData;
 };
 
+const updateUser = async (nationalRegisterNumber: string, user: User): Promise<User> => {
+  try {
+    const token = JSON.parse(
+      localStorage.getItem("loggedInUser") || "{}"
+    )?.token;
+    const response = await fetch(
+      process.env.NEXT_PUBLIC_API_URL + `/users/${nationalRegisterNumber}/settings`,
+      {
+        method: "PUT",
+        headers: {
+          "Content-Type": "application/json",
+          Authorization: `Bearer ${token}`,
+        },
+        body: JSON.stringify(user),
+      }
+    ); 
+
+    // const updatedUserr = await response.text();
+    // console.log(updatedUserr);
+
+    if (!response.ok) {
+      throw new Error("User not updated");
+    }
+
+    const updatedUser = await response.json();
+    return updatedUser;
+
+  } catch (error: any) {
+    throw new Error(error);
+  }
+};
+
 const UserService = {
   createUser,
   getUserByEmailAndPassword,
   getUserByNationalRegisterNumber,
   loginUser,
+  updateUser
 };
 
 export default UserService;

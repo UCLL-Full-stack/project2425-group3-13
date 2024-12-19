@@ -1,26 +1,23 @@
-import React from "react";
-import Head from "next/head";
-import Header from "@/components/header";
-import Footer from "@/components/footer";
+import React from 'react';
+import Head from 'next/head';
+import Header from '@/components/header';
+import Footer from '@/components/footer';
 import styles from '@/styles/Home.module.css';
-import LoginForm from "@/components/users/LoginForm";
-import { serverSideTranslations } from "next-i18next/serverSideTranslations";
+import TransactionOverview from '@/components/transactions/TransactionOverview';
+import { serverSideTranslations } from 'next-i18next/serverSideTranslations';
 
-const Login: React.FC = () => {
+const OverviewExpenses = () => {
   return (
     <>
       <Head>
-        <title>Login</title>
+        <title>Transactions overview</title>
         <meta name="description" content="Personal Finance Tracker app" />
         <meta name="viewport" content="width=device-width, initial-scale=1" />
         <link rel="icon" href="/favicon/favicon.ico" />
       </Head>
       <Header />
       <main className={styles.main}>
-        <h1>Login</h1>
-        <section>
-          <LoginForm />
-        </section>
+        <TransactionOverview type="user" />
       </main>
       <Footer />
     </>
@@ -37,4 +34,4 @@ export const getServerSideProps = async (context: any) => {
   };
 };
 
-export default Login;
+export default OverviewExpenses;

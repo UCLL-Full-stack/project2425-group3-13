@@ -1,7 +1,7 @@
 import { Account as AccountPrisma } from '@prisma/client';
 import { User } from './user';
 import { Transaction } from './transaction';
-import { TransactionType } from '../types';
+import { AccountInput, TransactionType } from '../types';
 
 export class Account {
     private id?: number;
@@ -107,10 +107,26 @@ export class Account {
         if (type === 'income') {
             return (this.balance += amount);
         } else if (type === 'expense') {
-            return (this.balance -= amount);
+            if (this.balance - amount < 0) {
+                throw new Error('Insufficient funds.');
+            } else if (this.balance - amount === 0) {
+                this.status = 'Inactive';
+                return (this.balance -= amount);
+            } else {
+                return (this.balance -= amount);
+            }
         } else {
             throw new Error('Transaction type must be either "income" or "expense".');
         }
+    }
+
+    update(accountInput: Partial<AccountInput>) {
+        if (accountInput.status) this.status = accountInput.status;
+        if (accountInput.status) this.balance = accountInput.balance;
+        if (accountInput.status) this.isShared = accountInput.isShared;
+        if (accountInput.status) this.startDate = accountInput.startDate;
+        if (accountInput.status) this.endDate = accountInput.endDate;
+        if (accountInput.status) this.type = accountInput.type;
     }
 
     validate(account: {
@@ -125,9 +141,6 @@ export class Account {
     }) {
         if (account.balance < 0) {
             throw new Error('Balance must be greater than or equal to 0.');
-        }
-        if (!account.accountNumber) {
-            throw new Error('Account number is required.');
         }
         if (!account.type) {
             throw new Error('Account type is required.');

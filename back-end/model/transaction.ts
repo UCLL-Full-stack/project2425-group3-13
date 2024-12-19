@@ -13,6 +13,8 @@ export class Transaction {
     private type: TransactionType;
 
     constructor(transaction: {
+        referenceNumber?: string;
+        date?: Date;
         amount: number;
         currency: string;
         sourceAccount: Account;
@@ -26,9 +28,10 @@ export class Transaction {
         this.currency = transaction.currency;
         this.sourceAccount = transaction.sourceAccount;
         this.destinationAccount = transaction.destinationAccount;
+        this.date = transaction.date || new Date();
+        this.referenceNumber =
+            transaction.referenceNumber || this.generateReferenceNumber(transaction.type);
         this.type = transaction.type;
-        this.date = new Date();
-        this.referenceNumber = this.generateReferenceNumber(transaction.type);
     }
 
     getId(): number | undefined {
@@ -71,21 +74,38 @@ export class Transaction {
         return this.type;
     }
 
-    validate(transaction: { amount: number; currency: string; id?: number }) {
-        if (transaction.amount <= 0) {
+    validate(transaction: {
+        amount: number;
+        currency: string;
+        sourceAccount: Account;
+        destinationAccount: Account;
+        id?: number;
+    }) {
+        if (transaction.amount === undefined) {
+            throw new Error('Amount is required.');
+        } else if (transaction.currency === undefined) {
+            throw new Error('Currency is required.');
+        } else if (transaction.sourceAccount === undefined) {
+            throw new Error('Source account is required.');
+        } else if (transaction.destinationAccount === undefined) {
+            throw new Error('Destination account is required.');
+        } else if (transaction.amount <= 0) {
             throw new Error('Amount must be greater than 0.');
-        }
-        if (
+        } else if (
             transaction.currency !== 'USD' &&
             transaction.currency !== 'EUR' &&
             transaction.currency !== 'GBP'
         ) {
             throw new Error('Currency must be either USD, EUR or GBP.');
+        } else if (transaction.destinationAccount === transaction.sourceAccount) {
+            throw new Error('Source and destination accounts must be different.');
+        } else if (transaction.sourceAccount.getBalance() - transaction.amount < 0) {
+            throw new Error('Insufficient funds.');
         }
     }
 
     generateReferenceNumber(type: string): string {
-        const lastThreeNumbers = this.sourceAccount.getAccountNumber().split('').join(' ');
+        const lastThreeNumbers = this.sourceAccount.getAccountNumber().slice(-3);
         const firstThreeLettType = type.slice(0, 3).toUpperCase();
         const year = this.date.getUTCFullYear().toString();
         const uniqueNumber =
@@ -94,23 +114,21 @@ export class Transaction {
         return referenceNumber;
     }
 
-    static from({
-        id,
-        amount,
-        currency,
-        type,
-        sourceAccount,
-        destinationAccount,
-    }: TransactionPrisma & { sourceAccount: AccountPrisma; destinationAccount: AccountPrisma }) {
+    static from(
+        transactionPrisma: TransactionPrisma & {
+            sourceAccount: AccountPrisma;
+            destinationAccount: AccountPrisma;
+        }
+    ): Transaction {
         return new Transaction({
-            id,
-            amount,
-            currency,
-            sourceAccount: Account.from({ ...sourceAccount }),
-            destinationAccount: Account.from({
-                ...destinationAccount,
-            }),
-            type,
+            id: transactionPrisma.id,
+            amount: transactionPrisma.amount,
+            currency: transactionPrisma.currency,
+            sourceAccount: Account.from(transactionPrisma.sourceAccount),
+            destinationAccount: Account.from(transactionPrisma.destinationAccount),
+            type: transactionPrisma.type,
+            referenceNumber: transactionPrisma.referenceNumber,
+            date: transactionPrisma.date,
         });
     }
 }

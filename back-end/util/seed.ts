@@ -17,7 +17,7 @@ const generateReferenceNumber = (
     accountNumber: string,
     date: Date
 ): string => {
-    const lastThreeNumbers = accountNumber.slice(-3).split('').join(' '); // Last 3 digits of account number with spaces
+    const lastThreeNumbers = accountNumber.slice(-3).split(''); // Last 3 digits of account number with spaces
     const firstThreeLettersType = transactionType.substring(0, 3).toUpperCase(); // First 3 letters of the transaction type
     const year = date.getUTCFullYear().toString(); // Year of the transaction date
     const uniqueNumber = Date.now().toString().slice(-3) + Math.random().toString().substring(2, 5); // Unique number
@@ -26,9 +26,9 @@ const generateReferenceNumber = (
 };
 
 const main = async () => {
+    await prisma.transaction.deleteMany();
     await prisma.user.deleteMany();
     await prisma.account.deleteMany();
-    await prisma.transaction.deleteMany();
 
     // Reusable date values
     const startDate1 = set(new Date(), { year: 2023, month: 0, date: 1 });
@@ -71,7 +71,7 @@ const main = async () => {
             nationalRegisterNumber: '92.05.24-123.45',
             name: 'Alice Johnson',
             birthDate: birthDate1,
-            isAdministrator: true,
+            isAdministrator: false,
             phoneNumber: '+32475123456',
             email: 'alice.johnson@example.com',
             password: alicePassword,

@@ -1,0 +1,71 @@
+{
+  "title": "Personal Finance Tracker",
+  "loading": "Loading...",
+  "submit": {
+    "register": "Register",
+    "login": "Log in"
+  },
+  "nav": {
+    "accounts": "Accounts",
+    "logout": "Log out",
+    "home": "Home",
+    "register": "Register",
+    "login": "Log in"
+    },
+  "footer": {
+    "contactUs": "Contact us"
+    },
+  "error": {
+    "noUserFound": "No user found"
+    },
+  "account": {
+    "overviewTitle": "Account Overview"
+    },
+  "accountOverview": {
+    "accountNumber": "Account Number",
+    "balance": "Balance",
+    "type": "Type",
+    "status": "Status",
+    "startDate": "Start Date",
+    "endDate": "End Date",
+    "noAccounts": "You currently do not have any accounts.",
+    "deleteAccount": "Delete Account"
+    },
+  "userDetails": {
+    "welcome": "Welcome {{name}}!",
+    "name": "Name",
+    "phoneNumber": "Phone Number",
+    "nationalRegisterNumber": "National Register Number",
+    "birthDate": "Birth Date",
+    "password": "Password"
+    },
+    "register": {
+      "title": "Register Form",
+      "heading": "Sign up"
+    },
+    "home": {
+    "title": "Home",
+    "metaDescription": "Personal Finance Tracker app",
+    "welcomeMessage": "Welcome to Personal Finance Tracker!",
+    "intro": "Easily manage your finances and reach your financial goals with the Personal Finance Tracker. Here’s what you can do:",
+    "features": {
+      "multipleAccounts": {
+        "title": "Multiple Accounts",
+        "description": "Log in to create and manage multiple bank accounts. You can even share access with others, while retaining full control over your accounts."
+      },
+      "seamlessTransactions": {
+        "title": "Seamless Transactions",
+        "description": "Send and receive money effortlessly between accounts."
+      },
+      "expenseTracking": {
+        "title": "Expense & Income Tracking",
+        "description": "Review all your expenses and income with detailed sorting options by date, amount, or category."
+      },
+      "secureEnvironment": {
+        "title": "Secure & Managed Environment",
+        "description": "With bank administrators on hand to monitor accounts and ensure security, your data is always safe."
+      }
+    },
+    "getStarted": "Get started today to take control of your finances!"
+  }
+}

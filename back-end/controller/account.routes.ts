@@ -98,7 +98,6 @@ accountRouter.post('/', async (req: Request, res: Response, next: NextFunction) 
  *           type: integer
  *           format: int64
  *           required: true
- *           description: The lecturer id.
  *     responses:
  *       200:
  *         description: JSON consisting of an account object
@@ -116,4 +115,145 @@ accountRouter.get('/:id', async (req: Request, res: Response, next: NextFunction
         next(error);
     }
 });
+
+/**
+ * @swagger
+ * /account/accountNumber/{accountNumber}:
+ *   get:
+ *     summary: Get account by account number.
+ *     security:
+ *       - bearerAuth: []
+ *     parameters:
+ *       - in: path
+ *         name: accountNumber
+ *         schema:
+ *           type: string
+ *           required: true
+ *     responses:
+ *       200:
+ *         description: JSON consisting of an account object
+ *         content:
+ *           application/json:
+ *             schema:
+ *                 $ref: '#/components/schemas/Account'
+ */
+accountRouter.get(
+    '/accountNumber/:accountNumber',
+    async (req: Request, res: Response, next: NextFunction) => {
+        try {
+            const accountNumber = req.params.accountNumber;
+            const account = await accountService.getAccountByAccountNumber(accountNumber);
+            res.status(200).json(account);
+        } catch (error: any) {
+            next(error);
+        }
+    }
+);
+
+/**
+ * @swagger
+ * /account:
+ *   get:
+ *     summary: Get accounts associated with the authenticated user.
+ *     security:
+ *       - bearerAuth: []
+ *     responses:
+ *       200:
+ *         description: JSON array consisting of account objects.
+ *         content:
+ *           application/json:
+ *             schema:
+ *               type: array
+ *               items:
+ *                 $ref: '#/components/schemas/Account'
+ *       401:
+ *         description: Unauthorized.
+ *       404:
+ *         description: No accounts found for the user.
+ *       500:
+ *         description: Internal server error.
+ */ accountRouter.get(
+    '/',
+    async (req: Request & { auth: any }, res: Response, next: NextFunction) => {
+        try {
+            const request = req as Request & { auth: { email: string } };
+            const { email } = request.auth;
+            const accounts = await accountService.getAccountsOfUser(email);
+            res.status(200).json(accounts);
+        } catch (error: any) {
+            next(error);
+        }
+    }
+);
+
+/**
+ * @swagger
+ * /account:
+ *   put:
+ *     summary: Update account by ID (primarily used to update status)
+ *     security:
+ *       - bearerAuth: []
+ *     requestBody:
+ *       required: true
+ *       content:
+ *         application/json:
+ *           schema:
+ *             $ref: '#/components/schemas/AccountInput'
+ *     responses:
+ *       200:
+ *         description: The updated account object.
+ *         content:
+ *           application/json:
+ *             schema:
+ *               $ref: '#/components/schemas/Account'
+ *       400:
+ *         description: Invalid input.
+ *       401:
+ *         description: Unauthorized.
+ *       404:
+ *         description: Account not found.
+ *       500:
+ *         description: Internal server error.
+ */
+accountRouter.put('/', async (req: Request & { auth: any }, res: Response, next: NextFunction) => {
+    try {
+        const request = req as Request & { auth: { email: string } };
+        const { email } = request.auth;
+        const accountInput = <AccountInput>req.body;
+        const updatedAccount = await accountService.updateAccount(email, accountInput);
+        res.status(200).json(updatedAccount);
+    } catch (error: any) {
+        next(error);
+    }
+});
+
+/**
+ * @swagger
+ * /account/{accountNumber}:
+ *   delete:
+ *     summary: Delete account by account number.
+ *     security:
+ *       - bearerAuth: []
+ *     parameters:
+ *       - in: path
+ *         name: accountNumber
+ *         schema:
+ *           type: string
+ *           required: true
+ *     responses:
+ *       200:
+ *         description: Account deleted successfully.
+ *       400:
+ *         description: Bad request.
+ */
+accountRouter.delete('/:accountNumber', async (req: Request, res: Response, next: NextFunction) => {
+    try {
+        const accountNumber = req.params.accountNumber;
+        await accountService.deleteAccount(accountNumber);
+        res.status(200).json({ message: 'Account deleted successfully' });
+    } catch (error: any) {
+        next(error);
+    }
+});
+
 export { accountRouter };

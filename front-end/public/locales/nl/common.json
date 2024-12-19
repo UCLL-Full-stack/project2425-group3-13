@@ -1,0 +1,69 @@
+{
+  "title": "Persoonlijke Financiële Tracker",
+  "loading": "Laden...",
+  "submit": {
+    "register": "Registreren",
+    "login": "Inloggen"
+  },
+  "nav": {
+    "accounts": "Rekeningen",
+    "logout": "Uitloggen",
+    "home": "Startpagina",
+    "register": "Registreren",
+    "login": "Inloggen"
+  },
+  "footer": {
+    "contactUs": "Contacteer ons"
+  },
+  "error": {
+    "noUserFound": "Geen gebruiker gevonden"
+  },
+  "account": {
+    "overviewTitle": "Rekeningoverzicht"
+  },
+  "accountOverview": {
+    "accountNumber": "Rekeningnummer",
+    "balance": "Saldo",
+    "startDate": "Startdatum",
+    "endDate": "Einddatum",
+    "noAccounts": "U heeft momenteel geen rekeningen.",
+    "deleteAccount": "Verwijder account"
+  },
+  "userDetails": {
+    "welcome": "Welkom {{name}}!",
+    "name": "Naam",
+    "phoneNumber": "Telefoonnummer",
+    "nationalRegisterNumber": "Rijksregisternummer",
+    "birthDate": "Geboortedatum",
+    "password": "Wachtwoord"
+  },
+  "register": {
+    "title": "Registratieformulier",
+    "heading": "Aanmelden"
+    },
+  "home": {
+    "title": "Startpagina",
+    "metaDescription": "Persoonlijke Financiële Tracker app",
+    "welcomeMessage": "Welkom bij de Persoonlijke Financiële Tracker!",
+    "intro": "Beheer eenvoudig je financiën en bereik je financiële doelen met de Persoonlijke Financiële Tracker. Hier is wat je kunt doen:",
+    "features": {
+      "multipleAccounts": {
+        "title": "Meerdere Rekeningen",
+        "description": "Log in om meerdere bankrekeningen aan te maken en te beheren. Je kunt zelfs toegang delen met anderen, terwijl je volledige controle behoudt over je rekeningen."
+      },
+      "seamlessTransactions": {
+        "title": "Naadloze Transacties",
+        "description": "Verzend en ontvang eenvoudig geld tussen rekeningen."
+      },
+      "expenseTracking": {
+        "title": "Uitgaven & Inkomsten Overzicht",
+        "description": "Bekijk al je uitgaven en inkomsten met gedetailleerde sorteermogelijkheden op datum, bedrag of categorie."
+      },
+      "secureEnvironment": {
+        "title": "Veilige & Beheerde Omgeving",
+        "description": "Met bankbeheerders die rekeningen monitoren en veiligheid garanderen, zijn je gegevens altijd veilig."
+      }
+    },
+    "getStarted": "Begin vandaag nog om de controle over je financiën te nemen!"
+  }
+}

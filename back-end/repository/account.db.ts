@@ -1,5 +1,6 @@
 import { Account } from '../model/account';
 import database from '../util/database';
+import userDb from '../repository/user.db';
 
 // const accounts: Account[] = [];
 
@@ -20,7 +21,7 @@ const createAccount = async (account: Account): Promise<Account> => {
             },
         });
 
-        return Account.from({ ...accountPrisma });
+        return Account.from(accountPrisma);
     } catch (error: any) {
         throw new Error('Database error. See server log for details.');
     }
@@ -44,17 +45,21 @@ const getAccountById = async ({ id }: { id: number }): Promise<Account | null> =
 };
 
 const getAccountByAccountNumber = async (accountNumber: string): Promise<Account | null> => {
-    // return accounts.find((account) => account.getAccountNumber() === accountNumber);
-
     try {
+        console.log(`Fetching account with account number: ${accountNumber}`);
         const accountPrisma = await database.account.findUnique({
             where: {
                 accountNumber: accountNumber,
             },
         });
-
-        return accountPrisma ? Account.from({ ...accountPrisma }) : null;
+        console.log(`Fetched account: ${JSON.stringify(accountPrisma)}`);
+        if (accountPrisma) {
+            return Account.from(accountPrisma);
+        } else {
+            return null;
+        }
     } catch (error: any) {
+        console.error('Database error:', error);
         throw new Error('Database error. See server log for details.');
     }
 };
@@ -75,10 +80,30 @@ const updateAccount = async (account: Account): Promise<Account> => {
             },
         });
 
-        return Account.from({ ...accountPrisma });
+        return Account.from(accountPrisma);
+    } catch (error: any) {
+        // throw new Error('Database error. See server log for details.');
+
+        throw new Error(`Database error: ${error.message}`);
+    }
+};
+
+const deleteAccount = async (account: Account): Promise<void> => {
+    try {
+        await database.account.delete({
+            where: {
+                id: account.getId(),
+            },
+        });
     } catch (error: any) {
         throw new Error('Database error. See server log for details.');
     }
 };
 
-export default { createAccount, getAccountById, getAccountByAccountNumber, updateAccount };
+export default {
+    createAccount,
+    getAccountById,
+    getAccountByAccountNumber,
+    updateAccount,
+    deleteAccount,
+};

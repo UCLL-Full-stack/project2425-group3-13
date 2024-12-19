@@ -13,9 +13,17 @@ const getAllUsers = async (): Promise<User[]> => {
 };
 
 const createUser = async (user: User): Promise<User> => {
-    const accounts = user.getAccounts();
-
     try {
+        console.log('Creating user with data:', {
+            nationalRegisterNumber: user.getNationalRegisterNumber(),
+            name: user.getName(),
+            birthDate: user.getBirthDate(),
+            isAdministrator: user.getIsAdministrator(),
+            phoneNumber: user.getPhoneNumber(),
+            email: user.getEmail(),
+            password: user.getPassword(),
+        });
+
         const userPrisma = await database.user.create({
             data: {
                 nationalRegisterNumber: user.getNationalRegisterNumber(),
@@ -25,34 +33,13 @@ const createUser = async (user: User): Promise<User> => {
                 phoneNumber: user.getPhoneNumber(),
                 email: user.getEmail(),
                 password: user.getPassword(),
-                accounts: {
-                    create: accounts.map((account) => ({
-                        accountNumber: account.getAccountNumber(),
-                        balance: account.getBalance(),
-                        isShared: account.getIsShared(),
-                        startDate: account.getStartDate(),
-                        endDate: account.getEndDate(),
-                        status: account.getStatus(),
-                        type: account.getType(),
-                        transaction: {
-                            create: account.getTransactions().map((transaction) => ({
-                                referenceNumber: transaction.getReferenceNumber(),
-                                date: transaction.getDate(),
-                                amount: transaction.getAmount(),
-                                currency: transaction.getCurrency(),
-                                sourceAccountId: transaction.getSourceAccountId(),
-                                destinationAccountId: transaction.getDestinationAccountId(),
-                                type: transaction.getTransactionType(),
-                            })),
-                        },
-                    })),
-                },
             },
-            include: { accounts: { include: { expense: true, income: true } } },
+            include: { accounts: true },
         });
 
         return User.from(userPrisma);
     } catch (error: any) {
+        console.error('Database error:', error);
         throw new Error('Database error. See server log for details.');
     }
 };
@@ -152,6 +139,26 @@ const addAccount = async (nationalRegisterNumber: string, accountNumber: string)
     }
 };
 
+const getUserById = async (id: number): Promise<User | null> => {
+    try {
+        const userPrisma = await database.user.findUnique({
+            where: {
+                id: id,
+            },
+            include: { accounts: { include: { expense: true, income: true } } },
+        });
+
+        if (userPrisma) {
+            return User.from(userPrisma);
+        } else {
+            return null;
+        }
+    } catch (error: any) {
+        // throw new Error('Database error. See server log for details.');
+        throw new Error(`Database error: ${error.message}`);
+    }
+};
+
 export default {
     createUser,
     getUserByNationalRegisterNumber,
@@ -160,4 +167,5 @@ export default {
     updateUser,
     deleteUser,
     addAccount,
+    getUserById,
 };

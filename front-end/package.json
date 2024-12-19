@@ -10,7 +10,11 @@
   "dependencies": {
     "next": "^14.2.16",
     "react": "^18",
-    "react-dom": "^18"
+    "react-dom": "^18",
+    "swr": "^2.2.5",
+    "i18next": "^23.7.6", 
+    "next-i18next": "^15.0.0", 
+    "react-i18next": "^13.4.1" 
   },
   "devDependencies": {
     "@types/node": "^20.17.5",

@@ -8,8 +8,13 @@ import { User } from "@/types";
 import UserDetails from "@/components/users/UserDetails";
 import AccountOverview from "@/components/accounts/AccountOverview";
 import styles from '@/styles/Home.module.css';
+import AccountService from "@/services/AccountService";
+import useSWR, { mutate } from "swr";
+import { serverSideTranslations } from "next-i18next/serverSideTranslations";
+import { useTranslation } from "next-i18next";
 
-const ReadUserByNationalRegisterNumber = () => {
+const ReadUserByNationalRegisterNumber: React.FC = () => {
+  const { t } = useTranslation();
   const [user, setUser] = useState<User | null>(null);
   const [loading, setLoading] = useState(true);
 
@@ -47,18 +52,30 @@ const ReadUserByNationalRegisterNumber = () => {
     }
   }, [userNationalRegisterNumber]);
 
+  const getAccountsForUser = async () => {
+    const accounts = await AccountService.getAccountsForUser();
+    // console.log(accounts)
+    return accounts;
+  }
+  
+  const { data: accounts, error, isLoading } = useSWR('getAccounts', getAccountsForUser);
+  
+  setInterval(() => {
+      mutate("getAccounts", getAccountsForUser());
+  }, 480000);
+
   if (loading) {
-    return <div>Loading...</div>;
+    return <div>{t("loading")}</div>;
   }
 
   if (!user) {
-    return <div>No user found</div>;
+    return <div>{t("error.noUserFound")}</div>;
   }
 
   return (
     <>
       <Head>
-        <title>Account Overview</title>
+        <title>{t("account.overviewTitle")}</title>
         <meta name="description" content="Personal Finance Tracker app" />
         <meta name="viewport" content="width=device-width, initial-scale=1" />
         <link rel="icon" href="/favicon/favicon.ico" />
@@ -66,12 +83,22 @@ const ReadUserByNationalRegisterNumber = () => {
       <Header />
       <main className={styles.main}>
         <UserDetails user={user} />
-        <h2>Account Overview</h2>
-        <AccountOverview user={user} />
+        <h2>{t("account.overviewTitle")}</h2>
+        <AccountOverview accounts={accounts!} />
       </main>
       <Footer />
     </>
   );
+};
+
+export const getServerSideProps = async (context: any) => {
+  const { locale } = context;
+
+  return {
+      props: {
+      ...(await serverSideTranslations(locale ?? "en", ["common"])),
+      },
+  };
 };
 
 export default ReadUserByNationalRegisterNumber;

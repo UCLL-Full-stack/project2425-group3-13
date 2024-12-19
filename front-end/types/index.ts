@@ -31,7 +31,8 @@ type Transaction = {
   amount: number;
   currency: string;
   type: string;
-  account: Account;
+  destinationAccount: Account;
+  sourceAccount: Account;
 };
 
 type Budgetgoal = {
@@ -48,4 +49,23 @@ type Authentication = {
   password: string;
 };
 
-export type { User, Transaction, Budgetgoal, Account, Authentication };
+type ExpenseData = {
+  amount: number;
+  currency: string;
+  destinationAccountNumber: string;
+};
+
+type TransactionFilter = {
+  filterOption: string;
+  filterValue: string;
+};
+
+export type {
+  User,
+  Transaction,
+  Budgetgoal,
+  Account,
+  Authentication,
+  ExpenseData,
+  TransactionFilter,
+};
