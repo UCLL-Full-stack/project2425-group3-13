@@ -72,7 +72,7 @@ const Settings: React.FC<Props> = ({ user, accounts }: Props) => {
     } else {
       setType("password");
     }
-  }
+  };
 
   return (
     <>
@@ -173,7 +173,7 @@ const Settings: React.FC<Props> = ({ user, accounts }: Props) => {
                         <select
                           name="status"
                           id="status"
-                          value={updatedAccountStatus?.status}
+                          // value=""
                           onChange={(e) => handleAccountInputChange("status", e.target.value)}
                           >
                           <option value="Active">Active</option>

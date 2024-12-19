@@ -11,12 +11,12 @@ const LoginForm: React.FC = () => {
     email: "",
     password: "",
   });
-  const [errorMessage, setErrorMessage] = useState<string | null>(null);
+  const [error, setError] = useState<string | null>(null);
   const router = useRouter();
 
   const handleSubmit = async (event: React.FormEvent<HTMLFormElement>) => {
     event.preventDefault();
-    setErrorMessage(null);
+    setError(null);
 
     try {
       const user = await UserService.loginUser(credentials);
@@ -28,16 +28,16 @@ const LoginForm: React.FC = () => {
         nationalRegisterNumber: user.nationalRegisterNumber
       }));
 
-      if (user && user.nationalRegisterNumber) {
-        alert("Login successful!");
-        router.push(`/accounts/${user.nationalRegisterNumber}`);
-      } else {
-        alert("Login failed. User not found.");
-      }
-    } catch (error) {
+      alert("Login successful!");
+      router.push(`/accounts/${user.nationalRegisterNumber}`);
+    } catch (error: any) {
       console.log(credentials);
       console.error("Login error:", error);
-      setErrorMessage("Invalid email or password.");
+      if (credentials.email.trim().length === 0 || credentials.email.length === 0 ){
+        setError("Email and password are required.");
+      } else {
+        setError("Invalid email or password.");
+      }
     }
   };
 
@@ -47,7 +47,6 @@ const LoginForm: React.FC = () => {
 
   return (
     <form onSubmit={handleSubmit} className={styles.form}>
-      {errorMessage && <div className="error">{errorMessage}</div>}
       <label htmlFor="email">Email <sup>*</sup></label>
       <input 
         type="email"
@@ -70,6 +69,7 @@ const LoginForm: React.FC = () => {
         autoComplete="current-password"
         required
       />
+      {error && <div className={styles.error}>{error}</div>}
       <button type="submit">{t("submit.login")}</button>
     </form>
   );

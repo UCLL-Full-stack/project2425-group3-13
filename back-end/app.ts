@@ -8,11 +8,13 @@ import { userRouter } from './controller/user.routes';
 import { accountRouter } from './controller/account.routes';
 import { transactionRouter } from './controller/transaction.routes';
 import { expressjwt } from 'express-jwt';
+import helmet from 'helmet';
 
 const app = express();
 dotenv.config();
 const port = process.env.APP_PORT || 3000;
 
+app.use(helmet());
 app.use(cors({ origin: 'http://localhost:8080' }));
 app.use(bodyParser.json());
 
