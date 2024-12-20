@@ -13,8 +13,6 @@ const getAllUsers = async (): Promise<User[]> => {
 };
 
 const createUser = async (user: User): Promise<User> => {
-    const accounts = user.getAccounts();
-
     try {
         const userPrisma = await database.user.create({
             data: {

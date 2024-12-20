@@ -1,293 +1,232 @@
-// import { User } from '../../model/user';
-// import { Account } from '../../model/account';
-// import userDb from '../../repository/user.db';
-// import userService from '../../service/user.service';
-// import accountService from '../../service/account.service';
-// import { AccountInput } from '../../types';
+import { User } from '../../model/user';
+import { Account } from '../../model/account';
+import userDb from '../../repository/user.db';
+import userService from '../../service/user.service';
+import accountService from '../../service/account.service';
+import { AccountInput, UserInput } from '../../types';
+import bcrypt from 'bcrypt';
+import accountDb from '../../repository/account.db';
 
-// const accountInput: AccountInput = {
-//     isShared: false,
-//     type: 'Savings',
-// };
 
-// const account = new Account({
-//     ...accountInput,
-// });
+const accountInput: AccountInput = {
+    accountNumber: '20241104-SAV-370',
+    isShared: false,
+    type: 'transaction',
+    balance: 0,
+    startDate: new Date(),
+    endDate: null,
+    status: 'Active',
+    transactions: [],
+};
 
-// let createUserMock: jest.Mock;
-// let mockUserDbGetUserByEmailAndPassword: jest.Mock;
-// let mockUserDbGetUserByEmail: jest.Mock;
-// let mockUserDbGetUserByNationalRegisterNumber: jest.Mock;
-// let mockUserServiceAddAccount: jest.Mock;
-// let mockAccountServiceGetAccountByAccountNumber: jest.Mock;
+const account = new Account({
+    ...accountInput,
+    transactions: []
+});
 
-// beforeEach(() => {
-//     mockUserDbGetUserByEmailAndPassword = jest.fn();
-//     mockUserDbGetUserByEmail = jest.fn();
-//     mockUserDbGetUserByNationalRegisterNumber = jest.fn();
-//     createUserMock = jest.fn();
-//     mockUserServiceAddAccount = jest.fn();
-//     mockAccountServiceGetAccountByAccountNumber = jest.fn();
-// });
+const userInput: UserInput = { 
+    nationalRegisterNumber: '99.01.01-123.44',
+    name: 'John Doe',
+    birthDate: new Date('2001-01-01'),
+    isAdministrator: false,
+    phoneNumber: '0123456789',
+    email: 'john.doe@gmail.com',
+    password: 'Password1!',
+    accounts: []    
+};
 
-// afterEach(() => {
-//     jest.clearAllMocks();
-//     jest.restoreAllMocks();
-// });
+const userInputWithAccount: UserInput = { 
+    nationalRegisterNumber: '99.01.01-123.44',
+    name: 'John Doe',
+    birthDate: new Date('2001-01-01'),
+    isAdministrator: false,
+    phoneNumber: '0123456789',
+    email: 'john.doe@gmail.com',
+    password: 'Password1!',
+    accounts: [accountInput]    
+};
 
-// test('given: a valid user, when: creating a user, then: user is created with those values', () => {
-//     // Given
-//     userDb.createUser = createUserMock;
+const user = new User({
+    ...userInput,
+    accounts: [],
+});
 
-//     // When
-//     userService.createUser({
-//         nationalRegisterNumber: '99.01.01-123.44',
-//         name: 'John Doe',
-//         birthDate: new Date('2001-01-01'),
-//         isAdministrator: false,
-//         phoneNumber: '0123456789',
-//         email: 'john.doe@gmail.com',
-//         password: 'Password1!',
-//     });
+const userWithAccount = new User({
+    ...userInput,
+    accounts: [account],
+})
 
-//     // Then
-//     expect(createUserMock).toHaveBeenCalledTimes(1);
-//     expect(createUserMock).toHaveBeenCalledWith(
-//         expect.objectContaining({
-//             nationalRegisterNumber: '99.01.01-123.44',
-//             name: 'John Doe',
-//             birthDate: new Date('2001-01-01'),
-//             isAdministrator: false,
-//             phoneNumber: '0123456789',
-//             email: 'john.doe@gmail.com',
-//             password: 'Password1!',
-//         })
-//     );
-// });
+let createUserMock: jest.Mock;
+let mockUserDbGetUserByEmail: jest.Mock;
+let mockUserDbGetUserByNationalRegisterNumber: jest.Mock;
+let mockUserDbAddAccount: jest.Mock;
+let mockAccountDbGetAccountByAccountNumber: jest.Mock;
 
-// test('given: a user with existing national register number, when: creating a user, then: error is thrown', () => {
-//     // Given
-//     userDb.getUserByNationalRegisterNumber =
-//         mockUserDbGetUserByNationalRegisterNumber.mockReturnValue(
-//             new User({
-//                 nationalRegisterNumber: '99.01.01-123.45',
-//                 name: 'John Doe',
-//                 birthDate: new Date('2001-01-01'),
-//                 isAdministrator: false,
-//                 phoneNumber: '0123456789',
-//                 email: 'john.doe@gmail.com',
-//                 password: 'Password1!',
-//             })
-//         );
+beforeEach(() => {
+    mockUserDbGetUserByEmail = jest.fn();
+    mockUserDbGetUserByNationalRegisterNumber = jest.fn();
+    createUserMock = jest.fn();
+    mockUserDbAddAccount = jest.fn();
+    mockAccountDbGetAccountByAccountNumber = jest.fn();
+    
+    jest.mock('bcryptjs', () => ({
+        ...jest.requireActual('bcryptjs'),  // Keep the rest of the methods
+        compare: jest.fn().mockResolvedValue(true),  // Mock compare to always return true
+    }));
+});
 
-//     // When
-//     const createUser = () => {
-//         userService.createUser({
-//             nationalRegisterNumber: '99.01.01-123.45',
-//             name: 'John Doe',
-//             birthDate: new Date('2001-01-01'),
-//             isAdministrator: false,
-//             phoneNumber: '0123456789',
-//             email: 'john.doe@gmail.com',
-//             password: 'Password1!',
-//         });
-//     };
+afterEach(() => {
+    jest.clearAllMocks();
+    jest.restoreAllMocks();
+});
 
-//     // Then
-//     expect(createUser).toThrow(
-//         'User with national register number 99.01.01-123.45 already exists.'
-//     );
-// });
+test('given: a valid user, when: creating a user, then: user is created with those values', async () => {
+    // Given
+    userDb.getUserByNationalRegisterNumber = mockUserDbGetUserByNationalRegisterNumber.mockResolvedValue(null);
+    userDb.createUser = createUserMock.mockResolvedValue(user);
 
-// test('given: a valid email and password, when: getting a user by email and password, then: user is returned', () => {
-//     // Given
-//     userDb.getUserByEmailAndPassword = mockUserDbGetUserByEmailAndPassword.mockClear();
-//     const expectedUser = new User({
-//         nationalRegisterNumber: '99.01.01-123.45',
-//         name: 'John Doe',
-//         birthDate: new Date('2001-01-01'),
-//         isAdministrator: false,
-//         phoneNumber: '0123456789',
-//         email: 'john.doe@gmail.com',
-//         password: 'Password1!',
-//     });
-//     mockUserDbGetUserByEmailAndPassword.mockReturnValue(expectedUser);
+    // When
+    await userService.createUser(userInput);
 
-//     // When
-//     const result = userService.getUserByEmailAndPassword('john.doe@gmail.com', 'Password1!');
+    // Then
+    expect(createUserMock).toHaveBeenCalledTimes(1);
+    expect(createUserMock).toHaveBeenCalledWith({
+        ...user,
+        password: expect.anything(),
+    });
+});
 
-//     // Then
-//     expect(mockUserDbGetUserByEmailAndPassword).toHaveBeenCalledTimes(1);
-//     expect(mockUserDbGetUserByEmailAndPassword).toHaveBeenCalledWith(
-//         'john.doe@gmail.com',
-//         'Password1!'
-//     );
-//     expect(result).toEqual(expectedUser);
-// });
 
-// test('given: an invalid email and password, when: getting a user by email and password, then: error is thrown', () => {
-//     // Given
-//     userDb.getUserByEmailAndPassword = mockUserDbGetUserByEmailAndPassword.mockClear();
-//     mockUserDbGetUserByEmailAndPassword.mockReturnValue(undefined);
 
-//     // When
-//     const getUserByEmailAndPassword = () => {
-//         userService.getUserByEmailAndPassword('john.doe@gmail.com', 'Password1!');
-//     };
+test('given: a user with existing national register number, when: creating a user, then: error is thrown', async () => {
+    // Given
+    userDb.getUserByNationalRegisterNumber = mockUserDbGetUserByNationalRegisterNumber.mockResolvedValue(user);
 
-//     // Then
-//     expect(getUserByEmailAndPassword).toThrow('Invalid email or password.');
-// });
+    // When
+    const createUser = userService.createUser(userInput);
 
-// test('given: a valid email, when: getting a user by email, then: user is returned', () => {
-//     // Given
-//     userDb.getUserByEmail = mockUserDbGetUserByEmail.mockClear();
-//     const expectedUser = new User({
-//         nationalRegisterNumber: '99.01.01-123.45',
-//         name: 'John Doe',
-//         birthDate: new Date('2001-01-01'),
-//         isAdministrator: false,
-//         phoneNumber: '0123456789',
-//         email: 'john.doe@gmail.com',
-//         password: 'Password1!',
-//     });
-//     mockUserDbGetUserByEmail.mockReturnValue(expectedUser);
+    // Then
+    await expect(createUser).rejects.toThrow(
+        `User with national register number ${userInput.nationalRegisterNumber} already exists.`
+    );
+});
 
-//     // When
-//     const result = userService.getUserByEmail('john.doe@gmail.com');
 
-//     // Then
-//     expect(mockUserDbGetUserByEmail).toHaveBeenCalledTimes(1);
-//     expect(mockUserDbGetUserByEmail).toHaveBeenCalledWith('john.doe@gmail.com');
-//     expect(result).toEqual(expectedUser);
-// });
+test('given: a valid email and password, when: trying to authenticate a user, then: a token with specific values is returned', async () => {
+    // Given
+    userDb.getUserByEmail = mockUserDbGetUserByEmail.mockResolvedValue(user);
+    // (bcrypt.compare as jest.Mock).mockResolvedValue(true);
+    
+    // When
+    const result = await userService.authenticate(userInput);
 
-// test('given: an invalid email, when: getting a user by email, then: error is thrown', () => {
-//     // Given
-//     userDb.getUserByEmail = mockUserDbGetUserByEmail.mockClear();
-//     mockUserDbGetUserByEmail.mockReturnValue(undefined);
+    // Then
+    expect(mockUserDbGetUserByEmail).toHaveBeenCalledTimes(1);
+    expect(mockUserDbGetUserByEmail).toHaveBeenCalledWith(userInput.email);
+    expect(bcrypt.compare).toHaveBeenCalledWith(userInput.password, user.getPassword());
+    expect(result).toEqual({
+        token: expect.anything(), 
+        id: user.getId(),
+        email: userInput.email,
+        name: user.getName(),
+        nationalRegisterNumber: user.getNationalRegisterNumber(),
+    });
+});
 
-//     // When
-//     const getUserByEmail = () => {
-//         userService.getUserByEmail('john.doe@gmail.com');
-//     };
+test('given: an invalid email and password, when: getting a user by email and password, then: error is thrown', async () => {
+    // Given
+    userDb.getUserByEmail = mockUserDbGetUserByEmail.mockResolvedValue(null);
+    
+    // When
+    const result = userService.authenticate(userInput);
 
-//     // Then
-//     expect(getUserByEmail).toThrow('User with email john.doe@gmail.com not found.');
-// });
+    // Then
+    expect(mockUserDbGetUserByEmail).toHaveBeenCalledTimes(1);
+    await expect(result).rejects.toThrow('Invalid email or password.');
+});
 
-// test('given: a valid national register number, when: getting a user by national register number, then: user is returned', () => {
-//     // Given
-//     userDb.getUserByNationalRegisterNumber = mockUserDbGetUserByNationalRegisterNumber.mockClear();
-//     const expectedUser = new User({
-//         nationalRegisterNumber: '99.01.01-123.45',
-//         name: 'John Doe',
-//         birthDate: new Date('2001-01-01'),
-//         isAdministrator: false,
-//         phoneNumber: '0123456789',
-//         email: 'john.doe@gmail.com',
-//         password: 'Password1!',
-//     });
-//     mockUserDbGetUserByNationalRegisterNumber.mockReturnValue(expectedUser);
+test('given: a valid email, when: getting a user by email, then: user is returned', async () => {
+    // Given
+    userDb.getUserByEmail = mockUserDbGetUserByEmail.mockResolvedValue(user);
 
-//     // When
-//     const result = userService.getUserByNationalRegisterNumber('99.01.01-123.45');
+    // When
+    const result = await userService.getUserByEmail(userInput.email);
 
-//     // Then
-//     expect(mockUserDbGetUserByNationalRegisterNumber).toHaveBeenCalledTimes(1);
-//     expect(mockUserDbGetUserByNationalRegisterNumber).toHaveBeenCalledWith('99.01.01-123.45');
-//     expect(result).toEqual(expectedUser);
-// });
+    // Then
+    expect(mockUserDbGetUserByEmail).toHaveBeenCalledTimes(1);
+    expect(mockUserDbGetUserByEmail).toHaveBeenCalledWith(userInput.email);
+    expect(result).toEqual(user);
+});
 
-// test('given: an invalid national register number, when: getting a user by national register number, then: error is thrown', () => {
-//     // Given
-//     userDb.getUserByNationalRegisterNumber = mockUserDbGetUserByNationalRegisterNumber.mockClear();
-//     mockUserDbGetUserByNationalRegisterNumber.mockReturnValue(undefined);
+test('given: an invalid email, when: getting a user by email, then: error is thrown', async () => {
+    // Given
+    userDb.getUserByEmail = mockUserDbGetUserByEmail.mockResolvedValue(null);
 
-//     // When
-//     const getUserByNationalRegisterNumber = () => {
-//         userService.getUserByNationalRegisterNumber('99.01.01-123.45');
-//     };
+    // When
+    const result = userService.getUserByEmail(userInput.email);
 
-//     // Then
-//     expect(getUserByNationalRegisterNumber).toThrow(
-//         'User with national register number 99.01.01-123.45 not found.'
-//     );
-// });
+    // Then
+    await expect(result).rejects.toThrow('User with email john.doe@gmail.com not found.');
+});
 
-// test('given: a valid national register number and account number, when: adding an account, then: account is added to user', () => {
-//     // Given
-//     userDb.getUserByNationalRegisterNumber = mockUserDbGetUserByNationalRegisterNumber.mockClear();
-//     accountService.getAccountByAccountNumber =
-//         mockAccountServiceGetAccountByAccountNumber.mockClear();
+test('given: a valid national register number, when: getting a user by national register number, then: user is returned', async () => {
+    // Given
+    userDb.getUserByNationalRegisterNumber = mockUserDbGetUserByNationalRegisterNumber.mockResolvedValue(user);
 
-//     const user = new User({
-//         nationalRegisterNumber: '99.01.01-123.45',
-//         name: 'John Doe',
-//         birthDate: new Date('2001-01-01'),
-//         isAdministrator: false,
-//         phoneNumber: '0123456789',
-//         email: 'john.doe@gmail.com',
-//         password: 'Password1!',
-//     });
+    // When
+    const result = await userService.getUserByNationalRegisterNumber(userInput.nationalRegisterNumber);
 
-//     // Set up mocks to return user and account correctly
-//     mockUserDbGetUserByNationalRegisterNumber.mockReturnValue(user);
-//     mockAccountServiceGetAccountByAccountNumber.mockReturnValue(account);
+    // Then
+    expect(mockUserDbGetUserByNationalRegisterNumber).toHaveBeenCalledTimes(1);
+    expect(mockUserDbGetUserByNationalRegisterNumber).toHaveBeenCalledWith(userInput.nationalRegisterNumber);
+    expect(result).toEqual(user);
+});
 
-//     // Mock user and account methods
-//     user.addAccount = jest.fn();
-//     account.addUser = jest.fn();
+test('given: an invalid national register number, when: getting a user by national register number, then: error is thrown', async () => {
+    // Given
+    userDb.getUserByNationalRegisterNumber = mockUserDbGetUserByNationalRegisterNumber.mockResolvedValue(null);
 
-//     // When
-//     const updatedUser = userService.addAccount('99.01.01-123.45', '20241104-SAV-370');
+    // When
+    const result = userService.getUserByNationalRegisterNumber(userInput.nationalRegisterNumber);
 
-//     // Then
-//     expect(mockUserDbGetUserByNationalRegisterNumber).toHaveBeenCalledWith('99.01.01-123.45');
-//     expect(mockAccountServiceGetAccountByAccountNumber).toHaveBeenCalledWith('20241104-SAV-370');
-//     expect(user.addAccount).toHaveBeenCalledWith(account);
-//     expect(account.addUser).toHaveBeenCalledWith(user);
-//     expect(updatedUser).toEqual(user);
-// });
+    // Then
+    await expect(result).rejects.toThrow('User with national register number 99.01.01-123.44 not found.');
+});
 
-// test('given: an invalid national register number, when: adding an account, then: error is thrown', () => {
-//     // Given
-//     userDb.getUserByNationalRegisterNumber = mockUserDbGetUserByNationalRegisterNumber.mockClear();
-//     mockUserDbGetUserByNationalRegisterNumber.mockReturnValue(undefined);
+test('given: a valid national register number and account number, when: adding an account, then: account is added to user', async () => {
+    // Given
+    userDb.getUserByNationalRegisterNumber = mockUserDbGetUserByNationalRegisterNumber.mockResolvedValue(user);
+    accountDb.getAccountByAccountNumber = mockAccountDbGetAccountByAccountNumber.mockResolvedValue(account);
+    userDb.addAccount = mockUserDbAddAccount.mockResolvedValue(userWithAccount);
 
-//     // When
-//     const addAccount = () => {
-//         userService.addAccount('99.01.01-123.45', '20241104-SAV-370');
-//     };
+    // When
+    const result = await userService.addAccount(userInput.nationalRegisterNumber, accountInput.accountNumber);
 
-//     // Then
-//     expect(addAccount).toThrow('User with national register number 99.01.01-123.45 not found.');
-// });
+    // Then
+    expect(mockUserDbGetUserByNationalRegisterNumber).toHaveBeenCalledWith(userInput.nationalRegisterNumber);
+    expect(mockAccountDbGetAccountByAccountNumber).toHaveBeenCalledWith(accountInput.accountNumber);
+    expect(result).toEqual(userWithAccount);
+});
 
-// test('given: an invalid account number, when: adding an account, then: error is thrown', () => {
-//     // Given
-//     userDb.getUserByNationalRegisterNumber = mockUserDbGetUserByNationalRegisterNumber.mockClear();
-//     accountService.getAccountByAccountNumber =
-//         mockAccountServiceGetAccountByAccountNumber.mockClear();
+test('given: an invalid national register number, when: adding an account, then: error is thrown', async () => {
+    // Given
+    userDb.getUserByNationalRegisterNumber = mockUserDbGetUserByNationalRegisterNumber.mockResolvedValue(null);
 
-//     const user = new User({
-//         nationalRegisterNumber: '99.01.01-123.45',
-//         name: 'John Doe',
-//         birthDate: new Date('2001-01-01'),
-//         isAdministrator: false,
-//         phoneNumber: '0123456789',
-//         email: 'john.doe@gmail.com',
-//         password: 'Password1!',
-//     });
+    // When
+    const result = userService.addAccount(userInput.nationalRegisterNumber, accountInput.accountNumber);
 
-//     mockUserDbGetUserByNationalRegisterNumber.mockReturnValue(user);
-//     mockAccountServiceGetAccountByAccountNumber.mockReturnValue(undefined);
+    // Then
+    await expect(result).rejects.toThrow('User with national register number 99.01.01-123.44 not found.');
+});
 
-//     // When
-//     const addAccount = () => {
-//         userService.addAccount('99.01.01-123.45', '20241104-SAV-370');
-//     };
+test('given: an invalid account number, when: adding an account, then: error is thrown', async () => {
+    // Given
+    userDb.getUserByNationalRegisterNumber = mockUserDbGetUserByNationalRegisterNumber.mockResolvedValueOnce(user);
+    accountDb.getAccountByAccountNumber = mockAccountDbGetAccountByAccountNumber.mockResolvedValueOnce(null);
 
-//     // Then
-//     expect(addAccount).toThrow('Account with account number 20241104-SAV-370 not found.');
-// });
+    // When
+    const result = userService.addAccount(userInput.nationalRegisterNumber, accountInput.accountNumber);
+
+    // Then
+    await expect(result).rejects.toThrow('Account with account number 20241104-SAV-370 not found.');
+});

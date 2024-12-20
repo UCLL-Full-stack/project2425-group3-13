@@ -11,14 +11,6 @@ const user = new User({
     password: 'Password1!',
 });
 
-
-// const newAccount = new Account({
-//     isShared: true,
-//     type: 'Savings', 
-//     balance: 1000, 
-//     startDate: new Date('2024-01-01'), 
-//     status: 'Active'
-// });
 const date = new Date();
 
 test('given: valid values for account, when: creating a account, then: account is created with those values', () => {

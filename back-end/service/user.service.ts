@@ -86,9 +86,6 @@ const addAccount = async (nationalRegisterNumber: string, accountNumber: string)
         throw new Error(`Account with account number ${accountNumber} not found.`);
     }
 
-    // user.addAccount(account);
-    // account.addUser(user);
-
     return await userDb.addAccount(nationalRegisterNumber, accountNumber);
 };
 
