@@ -5,8 +5,10 @@ import TransactionService from '../../services/TransactionService';
 import styles from '../../styles/Home.module.css';
 import { Account } from '@/types';
 import { create } from 'domain';
+import { useTranslation } from 'next-i18next';
 
 const CreateExpense: React.FC = () => {
+  const { t } = useTranslation();
   const [amount, setAmount] = useState<number>(0);
   const [currency, setCurrency] = useState<string>('EUR');
   const [destinationAccountNumber, setDestinationAccountNumber] = useState<string>('');
@@ -34,21 +36,20 @@ const CreateExpense: React.FC = () => {
       try {
         const sourceAccount = await AccountService.getAccountByAccountNumber(accountNumber);
         const result = await TransactionService.createExpense(accountNumber as string, expenseData);
-        console.log(`Expense created successfully with body: ${JSON.stringify(expenseData)}`);
+
         alert('Expense created successfully!');
         router.push(`/transactions/overview/account/${sourceAccount.id}`);
       } catch (error: any) {
-        console.error('An error occurred while creating the expense:', error);
         if (destinationAccountNumber.trim().length === 0) {
-          setError('Destination Account Number is required.');
+          setError('destination_account_required');
         } else if (!destinationAccount) {
-          setError("Destination Account is not found.")
+          setError('destination_account_not_found')
         } else {
-          setError(`Account is blocked or closed, no transactions can be made or received.`);
+          setError('account_blocked_or_closed');
         }
       }
     } else {
-      setError('Invalid account number');
+      setError('invalid_account_number');
       return;
     }
   };
@@ -56,19 +57,19 @@ const CreateExpense: React.FC = () => {
   return (
     <form onSubmit={handleSubmit} className={styles.form}>
       <label>
-        Amount:
+      {t('form.amount_label')}
         <input type="number" value={amount} onChange={(e) => setAmount(Number(e.target.value))} />
       </label>
       <label>
-        Currency:
+      {t('form.currency_label')}
         <input type="text" value={currency} onChange={(e) => setCurrency(e.target.value)} />
       </label>
       <label>
-        Destination Account Number:
+      {t('form.destination_account_label')}
         <input type="text" value={destinationAccountNumber} onChange={(e) => setDestinationAccountNumber(e.target.value)} />
       </label>
-      {error && <div className={styles.error}>{error}</div>}
-      <button type="submit">Create Expense</button>
+      {error && <div className={styles.error}>{t(`messages.${error}`)}</div>}
+      <button type="submit">{t('form.submit_button')}</button>
     </form>
   );
 };

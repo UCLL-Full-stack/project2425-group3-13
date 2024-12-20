@@ -28,15 +28,15 @@ const LoginForm: React.FC = () => {
         nationalRegisterNumber: user.nationalRegisterNumber
       }));
 
-      alert("Login successful!");
+      alert(t("messagesLogin.login_success"));
       router.push(`/accounts/${user.nationalRegisterNumber}`);
     } catch (error: any) {
       console.log(credentials);
       console.error("Login error:", error);
-      if (credentials.email.trim().length === 0 || credentials.email.length === 0 ){
-        setError("Email and password are required.");
+      if (credentials.email.trim().length === 0 || credentials.password.trim().length === 0) {
+        setError(t("messagesLogin.email_password_required"));
       } else {
-        setError("Invalid email or password.");
+        setError(t("messagesLogin.invalid_credentials"));
       }
     }
   };
@@ -47,25 +47,25 @@ const LoginForm: React.FC = () => {
 
   return (
     <form onSubmit={handleSubmit} className={styles.form}>
-      <label htmlFor="email">Email <sup>*</sup></label>
+      <label htmlFor="email">email<sup>*</sup></label>
       <input 
         type="email"
         id="email"
         name="email"
         value={credentials.email}
         onChange={(e) => handleInputChange("email", e.target.value)}
-        placeholder="Email"
+        placeholder={t("placeholders.email")}
         autoComplete="email"
         required
       />
-      <label htmlFor="password">{t("userDetails.password")}<sup>*</sup></label>
+      <label htmlFor="password">{t("userDetails.password")} <sup>*</sup></label>
       <input 
         type="password"
         id="password"
         name="password"
         value={credentials.password}
         onChange={(e) => handleInputChange("password", e.target.value)}
-        placeholder={t("userDetails.password")}
+        placeholder={t("placeholders.password")}
         autoComplete="current-password"
         required
       />

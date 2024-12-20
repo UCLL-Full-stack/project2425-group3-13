@@ -3,12 +3,14 @@ import { useRouter } from 'next/router';
 import TransactionService from '@/services/TransactionService';
 import { Transaction } from '@/types';
 import styles from '@/styles/Home.module.css';
+import { useTranslation } from 'next-i18next';
 
 type TransactionOverviewProps = {
   type: 'user' | 'account';
 };
 
 const TransactionOverview: React.FC<TransactionOverviewProps> = ({ type }) => {
+  const { t } = useTranslation();
   const [transactions, setTransactions] = useState<Transaction[]>([]);
   const [loading, setLoading] = useState(true);
   const [filterOption, setFilterOption] = useState<string>('amount');
@@ -21,25 +23,21 @@ const TransactionOverview: React.FC<TransactionOverviewProps> = ({ type }) => {
       try {
         let fetchedTransactions: Transaction[] = [];
         if (type === 'user' && userId) {
-          console.log(`Fetching transactions for user id: ${userId}`);
           fetchedTransactions = await TransactionService.getTransactionsByUserId(Number(userId));
           setTransactions(fetchedTransactions);
         } else if (type === 'account' && accountId) {
-          console.log(`Fetching transactions for account id: ${accountId}`);
           fetchedTransactions = await TransactionService.getTransactionsByAccountId(Number(accountId));
           setTransactions(fetchedTransactions);
-        } else {
-          console.log('No valid id provided in the query');
         }
-      } catch (error) {
-        console.error('Error fetching transactions:', error);
+      } catch (error: any) {
+        alert(t('messagesTransactionOverview.error_loading_transactions'));
       } finally {
         setLoading(false);
       }
     };
 
     fetchTransactions();
-  }, [type, userId, accountId]);
+  }, [type, userId, accountId, t]);
 
   const handleFilterSubmit = async (event: React.FormEvent<HTMLFormElement>) => {
     event.preventDefault();
@@ -52,76 +50,77 @@ const TransactionOverview: React.FC<TransactionOverviewProps> = ({ type }) => {
     try {
       let filteredTransactions: Transaction[] = [];
       if (type === 'user' && userId) {
-        console.log(`Filtering transactions for user id: ${userId}`);
         filteredTransactions = await TransactionService.filterUserTransactions(Number(userId), transactionFilter);
       } else if (type === 'account' && accountId) {
-        console.log(`Filtering transactions for account id: ${accountId}`);
         filteredTransactions = await TransactionService.filterAccountTransactions(Number(accountId), transactionFilter);
-      } else {
-        console.log('No valid id provided in the query');
       }
-      console.log('Filtered transactions:', filteredTransactions);
+
       setTransactions(filteredTransactions);
-    } catch (error) {
-      console.error('Error filtering transactions:', error);
+    } catch (error: any) {
+      alert(t('messagesTransactionOverview.error_filtering_transactions'));
     }
   };
 
   if (loading) {
-    return <div>Loading...</div>;
+    return <div>{t('messagesTransactionOverview.loading')}</div>;
   }
 
   return (
     <div className={styles.accountOverview}>
       <form onSubmit={handleFilterSubmit}>
-        <label htmlFor="filterOption">Filter options:</label>
-        <select name="filterOption" id="filterOption" value={filterOption} onChange={(e) => setFilterOption(e.target.value)}>
-          <option value="amount">Amount</option>
-          <option value="currency">Currency</option>
-          <option value="date">Date</option>
-          <option value="type">Type</option>
+        <label htmlFor="filterOption">{t('filter.options_label')}:</label>
+        <select
+          name="filterOption"
+          id="filterOption"
+          value={filterOption}
+          onChange={(e) => setFilterOption(e.target.value)}
+        >
+          <option value="amount">{t('filter.amount')}</option>
+          <option value="currency">{t('filter.currency')}</option>
+          <option value="date">{t('filter.date')}</option>
+          <option value="type">{t('filter.type')}</option>
         </select>
-        <label htmlFor="filterValue">Filter value:</label>
+        <label htmlFor="filterValue">{t('filter.value_label')}:</label>
         {filterOption === 'date' ? (
           <input
-            name='filterValue'
-            id='filterValue'
+            name="filterValue"
+            id="filterValue"
             type="date"
             value={filterValue}
             onChange={(e) => setFilterValue(e.target.value)}
-            placeholder="Enter filter value"
+            placeholder={t('filter.enter_value')}
           />
         ) : filterOption === 'amount' ? (
           <input
-            name='filterValue'
-            id='filterValue'
+            name="filterValue"
+            id="filterValue"
             type="number"
             value={filterValue}
             onChange={(e) => setFilterValue(e.target.value)}
-            placeholder="Enter filter value"
+            placeholder={t('filter.enter_value')}
           />
         ) : (
           <input
-            name='filterValue'
-            id='filterValue'
+            name="filterValue"
+            id="filterValue"
             type="text"
             value={filterValue}
             onChange={(e) => setFilterValue(e.target.value)}
-            placeholder="Enter filter value"
+            placeholder={t('filter.enter_value')}
           />
         )}
-        <button type="submit">Filter</button>
+        <button type="submit">{t('filter.submit_button')}</button>
       </form>
       <table>
         <thead>
           <tr>
-            <th>Reference number</th>
-            <th>Amount</th>
-            <th>Currency</th>
-            <th>Date</th>
-            <th>Source Account</th>
-            <th>Destination Account</th>
-            <th>Type</th>
+            <th>{t('table.reference_number')}</th>
+            <th>{t('table.amount')}</th>
+            <th>{t('table.currency')}</th>
+            <th>{t('table.date')}</th>
+            <th>{t('table.source_account')}</th>
+            <th>{t('table.destination_account')}</th>
+            <th>{t('table.type')}</th>
           </tr>
         </thead>
         <tbody>
@@ -139,7 +138,7 @@ const TransactionOverview: React.FC<TransactionOverviewProps> = ({ type }) => {
             ))
           ) : (
             <tr>
-              <td colSpan={7}>No transactions found</td>
+              <td colSpan={7}>{t('messagesTransactionOverview.no_transactions_found')}</td>
             </tr>
           )}
         </tbody>
