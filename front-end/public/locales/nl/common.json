@@ -39,7 +39,13 @@
     "user": "gebruiker",
     "admin": "admin",
     "bank": "bank",
-    "password": "Wachtwoord"
+    "password": "Wachtwoord",
+    "nationalRegisterNumberError": "Rijksregisternummer is verplicht.",
+    "nameError": "Naam is verplicht.",
+    "birthDateError": "Geboortedatum mag niet in de toekomst liggen.",
+    "phoneNumberError": "Telefoonnummer is verplicht.",
+    "emailError": "E-mail is verplicht of het patroon is ongeldig.",
+    "passwordError": "Wachtwoord moet minimaal 8 tekens lang zijn, minstens één hoofdletter, één kleine letter, één cijfer en één speciaal teken bevatten."
   },
   "register": {
     "title": "Registratieformulier",
