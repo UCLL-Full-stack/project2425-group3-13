@@ -122,8 +122,6 @@ const deleteUser = async (nationalRegisterNumber: string): Promise<User> => {
         );
     }
 
-    // await userDb.deleteUser(nationalRegisterNumber);
-    // return 'User deleted successfully.';
     return await userDb.deleteUser(nationalRegisterNumber);
 };
 

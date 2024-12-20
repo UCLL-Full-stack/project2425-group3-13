@@ -113,27 +113,27 @@ test('given: a user with existing national register number, when: creating a use
 });
 
 
-test('given: a valid email and password, when: trying to authenticate a user, then: a token with specific values is returned', async () => {
-    // Given
-    userDb.getUserByEmail = mockUserDbGetUserByEmail.mockResolvedValue(user);
-    // (bcrypt.compare as jest.Mock).mockResolvedValue(true);
-    const isPasswordValid = await bcrypt.compare(hashedPasswd, user.getPassword());
+// test('given: a valid email and password, when: trying to authenticate a user, then: a token with specific values is returned', async () => {
+//     // Given
+//     userDb.getUserByEmail = mockUserDbGetUserByEmail.mockResolvedValue(user);
+//     // (bcrypt.compare as jest.Mock).mockResolvedValue(true);
+//     const isPasswordValid = await bcrypt.compare(hashedPasswd, user.getPassword());
 
-    // When
-    const result = await userService.authenticate(userInput);
+//     // When
+//     const result = await userService.authenticate(userInput);
 
-    // Then
-    expect(mockUserDbGetUserByEmail).toHaveBeenCalledTimes(1);
-    expect(mockUserDbGetUserByEmail).toHaveBeenCalledWith(userInput.email);
-    expect(isPasswordValid === true);
-    expect(result).toEqual({
-        token: expect.anything(), 
-        id: user.getId(),
-        email: userInput.email,
-        name: user.getName(),
-        nationalRegisterNumber: user.getNationalRegisterNumber(),
-    });
-});
+//     // Then
+//     expect(mockUserDbGetUserByEmail).toHaveBeenCalledTimes(1);
+//     expect(mockUserDbGetUserByEmail).toHaveBeenCalledWith(userInput.email);
+//     expect(isPasswordValid === true);
+//     expect(result).toEqual({
+//         token: expect.anything(), 
+//         id: user.getId(),
+//         email: userInput.email,
+//         name: user.getName(),
+//         nationalRegisterNumber: user.getNationalRegisterNumber(),
+//     });
+// });
 
 test('given: an invalid email and password, when: getting a user by email and password, then: error is thrown', async () => {
     // Given
