@@ -2,12 +2,7 @@ import { Account } from '../model/account';
 import { User } from '../model/user';
 import database from '../util/database';
 
-// const accounts: Account[] = [];
-
 const createAccount = async (account: Account): Promise<Account> => {
-    // const account = new Account({ isShared, type });
-    // accounts.push(account);
-    // return account;
     try {
         const accountPrisma = await database.account.create({
             data: {
@@ -28,9 +23,6 @@ const createAccount = async (account: Account): Promise<Account> => {
 };
 
 const getAccountById = async ({ id }: { id: number }): Promise<Account | null> => {
-    // const account = accounts.find((a) => a.getId() === id);
-    // return account ? account : null;
-
     try {
         const accountPrisma = await database.account.findUnique({
             where: {
@@ -82,8 +74,6 @@ const updateAccount = async (account: Account): Promise<Account> => {
 
         return Account.from(accountPrisma);
     } catch (error: any) {
-        // throw new Error('Database error. See server log for details.');
-
         throw new Error(`Database error: ${error.message}`);
     }
 };

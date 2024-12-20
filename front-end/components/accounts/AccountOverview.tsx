@@ -35,7 +35,7 @@ const AccountOverview: React.FC<AccountOverviewProps> = ({ accounts }) => {
             <th>Status</th>
             <th>{t("accountOverview.startDate")}</th>
             <th>{t("accountOverview.endDate")}</th>
-            <th>Transaction</th>
+            <th>{t("accountOverview.transaction")}</th>
           </tr>
         </thead>
         <tbody>

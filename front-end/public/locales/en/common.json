@@ -1,6 +1,7 @@
 {
   "title": "Personal Finance Tracker",
   "loading": "Loading...",
+  "language": "Language",
   "submit": {
     "register": "Register",
     "login": "Log in"
@@ -30,10 +31,9 @@
   "accountOverview": {
     "accountNumber": "Account Number",
     "balance": "Balance",
-    "type": "Type",
-    "status": "Status",
     "startDate": "Start Date",
     "endDate": "End Date",
+    "transaction": "Transaction",
     "noAccounts": "You currently do not have any accounts.",
     "deleteAccount": "Delete Account"
     },
@@ -83,5 +83,52 @@
       }
     },
     "getStarted": "Get started today to take control of your finances!"
+  },
+  "form": {
+    "amount_label": "Amount:",
+    "currency_label": "Currency:",
+    "destination_account_label": "Destination Account Number:",
+    "submit_button": "Create Expense"
+  },
+  "messages": {
+    "expense_created_success": "Expense created successfully!",
+    "destination_account_required": "Destination Account Number is required.",
+    "destination_account_not_found": "Destination Account is not found.",
+    "account_blocked_or_closed": "Account is blocked or closed, no transactions can be made or received.",
+    "invalid_account_number": "Invalid account number"
+  },
+  "filter": {
+    "options_label": "Filter options",
+    "amount": "Amount",
+    "currency": "Currency",
+    "date": "Date",
+    "type": "Type",
+    "value_label": "Filter value",
+    "enter_value": "Enter filter value",
+    "submit_button": "Filter"
+  },
+  "table": {
+    "reference_number": "Reference number",
+    "amount": "Amount",
+    "currency": "Currency",
+    "date": "Date",
+    "source_account": "Source Account",
+    "destination_account": "Destination Account",
+    "type": "Type"
+  },
+  "messagesTransactionOverview": {
+    "loading": "Loading...",
+    "error_loading_transactions": "An error occurred while loading transactions.",
+    "error_filtering_transactions": "An error occurred while filtering transactions.",
+    "no_transactions_found": "No transactions found"
+  },
+   "placeholders": {
+    "email": "Enter your email",
+    "password": "Enter your password"
+  },
+  "messagesLogin": {
+    "login_success": "Login successful!",
+    "email_password_required": "Email and password are required.",
+    "invalid_credentials": "Invalid email or password."
   }
 }

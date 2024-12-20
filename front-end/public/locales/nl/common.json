@@ -1,6 +1,7 @@
 {
   "title": "Persoonlijke Financiële Tracker",
   "loading": "Laden...",
+  "language": "Taal",
   "submit": {
     "register": "Registreren",
     "login": "Inloggen"
@@ -26,6 +27,7 @@
     "balance": "Saldo",
     "startDate": "Startdatum",
     "endDate": "Einddatum",
+    "transaction": "Transactie",
     "noAccounts": "U heeft momenteel geen rekeningen.",
     "deleteAccount": "Verwijder account"
   },
@@ -75,5 +77,52 @@
       }
     },
     "getStarted": "Begin vandaag nog om de controle over je financiën te nemen!"
+  },
+  "form": {
+    "amount_label": "Bedrag:",
+    "currency_label": "Valuta:",
+    "destination_account_label": "Rekeningnummer van ontvanger:",
+    "submit_button": "Uitgave aanmaken"
+  },
+  "messages": {
+    "expense_created_success": "Uitgave succesvol aangemaakt!",
+    "destination_account_required": "Rekeningnummer van ontvanger is vereist.",
+    "destination_account_not_found": "Rekening van ontvanger niet gevonden.",
+    "account_blocked_or_closed": "Rekening is geblokkeerd of gesloten, er kunnen geen transacties worden uitgevoerd of ontvangen.",
+    "invalid_account_number": "Ongeldig rekeningnummer"
+  },
+  "filter": {
+    "options_label": "Filteropties",
+    "amount": "Bedrag",
+    "currency": "Valuta",
+    "date": "Datum",
+    "type": "Type",
+    "value_label": "Filterwaarde",
+    "enter_value": "Voer filterwaarde in",
+    "submit_button": "Filteren"
+  },
+  "table": {
+    "reference_number": "Referentienummer",
+    "amount": "Bedrag",
+    "currency": "Valuta",
+    "date": "Datum",
+    "source_account": "Bronrekening",
+    "destination_account": "Bestemmingsrekening",
+    "type": "Type"
+  },
+  "messagesTransactionOverview": {
+    "loading": "Laden...",
+    "error_loading_transactions": "Er is een fout opgetreden bij het laden van transacties.",
+    "error_filtering_transactions": "Er is een fout opgetreden bij het filteren van transacties.",
+    "no_transactions_found": "Geen transacties gevonden"
+  },
+  "placeholders": {
+    "email": "Voer je e-mail in",
+    "password": "Voer je wachtwoord in"
+  },
+  "messagesLogin": {
+    "login_success": "Inloggen succesvol!",
+    "email_password_required": "E-mail en wachtwoord zijn verplicht.",
+    "invalid_credentials": "Ongeldige e-mail of wachtwoord."
   }
 }
