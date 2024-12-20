@@ -1,16 +1,26 @@
 import { Authentication, User } from "@/types";
 
-const createUser = async (user: User): Promise<void> => {
-  await fetch(process.env.NEXT_PUBLIC_API_URL + "/users/signup", {
+const createUser = async (user: User): Promise<User> => {
+  try {
+  const response = await fetch(process.env.NEXT_PUBLIC_API_URL + "/users/signup", {
     method: "POST",
     headers: {
       "Content-Type": "application/json",
     },
     body: JSON.stringify(user),
-  }).catch((error) => {
+    })
+
+    if (!response.ok) {
+      throw new Error("Creating user failed!");
+    }
+
+    const newUser = await response.json();
+    return newUser;
+        
+  } catch (error: any) {
     console.error("Error creating user:", error);
     throw new Error("Failed to create user");
-  });
+  }
 };
 
 const getUserByEmailAndPassword = async (

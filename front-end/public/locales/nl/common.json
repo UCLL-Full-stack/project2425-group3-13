@@ -40,10 +40,10 @@
     "admin": "admin",
     "bank": "bank",
     "password": "Wachtwoord",
-    "nationalRegisterNumberError": "Rijksregisternummer is verplicht.",
+    "nationalRegisterNumberError": "Rijksregisternummer is verplicht of patroon is ongeldig.",
     "nameError": "Naam is verplicht.",
     "birthDateError": "Geboortedatum mag niet in de toekomst liggen.",
-    "phoneNumberError": "Telefoonnummer is verplicht.",
+    "phoneNumberError": "Telefoonnummer is verplicht of patroon is ongeldig.",
     "emailError": "E-mail is verplicht of het patroon is ongeldig.",
     "passwordError": "Wachtwoord moet minimaal 8 tekens lang zijn, minstens één hoofdletter, één kleine letter, één cijfer en één speciaal teken bevatten."
   },

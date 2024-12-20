@@ -47,7 +47,13 @@
     "user": "user",
     "admin": "admin",
     "bank": "bank",
-    "password": "Password"
+    "password": "Password",
+    "nationalRegisterNumberError": "National Register Number is required or pattern is invalid.",
+    "nameError": "Name is required.",
+    "birthDateError": "Birthdate cannot be in the future.",
+    "phoneNumberError": "Phone number is required or pattern is invalid.",
+    "emailError": "Email is required or the pattern is invalid.",
+    "passwordError": "Password must be at least 8 characters long, contain at least one uppercase letter, one lowercase letter, one number, and one special character."
     },
     "register": {
       "title": "Register Form",
