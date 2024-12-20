@@ -101,7 +101,12 @@ const main = async () => {
             email: 'alice.johnson@example.com',
             password: alicePassword,
             accounts: {
-                connect: [{ id: account1.id }, { id: account2.id }],
+                connect: [
+                    { id: account1.id },
+                    { id: account2.id },
+                    { id: account3.id },
+                    { id: account4.id },
+                ],
             },
         },
     });
