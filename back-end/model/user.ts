@@ -170,6 +170,39 @@ export class User {
         };
     }
 
+    validateUserInput(userInput: Partial<UserInput>) {
+        if (!userInput.name?.trim()) {
+            throw new Error('Name cannot be empty.');
+        }
+
+        if (!userInput.phoneNumber?.trim()) {
+            throw new Error('Phone number cannot be empty.');
+        } else if (!this.validatePhone(userInput.phoneNumber)) {
+            throw new Error('Phone pattern is not valid.');
+        }
+
+        if (!userInput.email?.trim()) {
+            throw new Error('Email cannot be empty.');
+        } else if (!this.emailPattern(userInput.email)) {
+            throw new Error('Email pattern is not valid.');
+        }
+
+        // Validate password
+        if (!userInput.password?.trim()) {
+            throw new Error('Password cannot be empty.');
+        } else if (userInput.password.length < 8) {
+            throw new Error('Password must be at least 8 characters long.');
+        } else if (!/[A-Z]/.test(userInput.password)) {
+            throw new Error('Password must contain at least one uppercase letter.');
+        } else if (!/[a-z]/.test(userInput.password)) {
+            throw new Error('Password must contain at least one lowercase letter.');
+        } else if (!/[0-9]/.test(userInput.password)) {
+            throw new Error('Password must contain at least one number.');
+        } else if (!/[!@#\$%\^&\*]/.test(userInput.password)) {
+            throw new Error('Password must contain at least one special character (!@#$%^&*).');
+        }
+    }
+
     update(userInput: Partial<UserInput>) {
         if (userInput.name) this.name = userInput.name;
         if (userInput.phoneNumber) this.phoneNumber = userInput.phoneNumber;

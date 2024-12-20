@@ -19,7 +19,7 @@ const RegisterUser: React.FC = () => {
         email: "",
         password: "",
         birthDate: undefined,
-        role: "",
+        role: "user",
         phoneNumber: ""
     });
     const [errors, setErrors] = useState<{
@@ -95,13 +95,18 @@ const RegisterUser: React.FC = () => {
             router.push("/users/login");
         } catch (error: any) {
             const errors = validateForm(user);
+            console.log(user)
             setErrors(errors);
             console.log(errors)
         }
     }
 
     const handleInputChange = (field: keyof User, value: any) => {
-        setUser({ ...user, [field]: value });
+        // setUser({ ...user, [field]: value });
+        setUser((prevState) => ({
+            ...prevState,
+            [field]: value,
+          }));
     };
 
     return (

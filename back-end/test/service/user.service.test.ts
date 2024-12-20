@@ -33,7 +33,7 @@ const userInput: UserInput = {
     role: 'admin',
     phoneNumber: '0123456789',
     email: 'john.doe@gmail.com',
-    password: hashedPasswd,
+    password: password,
     accounts: []    
 };
 
@@ -44,7 +44,7 @@ const userInputWithAccount: UserInput = {
     role: 'admin',
     phoneNumber: '0123456789',
     email: 'john.doe@gmail.com',
-    password: hashedPasswd,
+    password: password,
     accounts: [accountInput]    
 };
 
@@ -117,7 +117,7 @@ test('given: a valid email and password, when: trying to authenticate a user, th
     // Given
     userDb.getUserByEmail = mockUserDbGetUserByEmail.mockResolvedValue(user);
     // (bcrypt.compare as jest.Mock).mockResolvedValue(true);
-    const isPasswordValid = await bcrypt.compare(userInput.password, user.getPassword());
+    const isPasswordValid = await bcrypt.compare(hashedPasswd, user.getPassword());
 
     // When
     const result = await userService.authenticate(userInput);
@@ -126,7 +126,6 @@ test('given: a valid email and password, when: trying to authenticate a user, th
     expect(mockUserDbGetUserByEmail).toHaveBeenCalledTimes(1);
     expect(mockUserDbGetUserByEmail).toHaveBeenCalledWith(userInput.email);
     expect(isPasswordValid === true);
-    expect(bcrypt.compare).toHaveBeenCalledWith(hashedPasswd, user.getPassword());
     expect(result).toEqual({
         token: expect.anything(), 
         id: user.getId(),

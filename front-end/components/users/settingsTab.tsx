@@ -16,6 +16,12 @@ const Settings: React.FC<Props> = ({ user, accounts }: Props) => {
   const [updatedAccountStatus, setUpdatedAccountStatus] = useState<Account | null>(null);
   const [updatedAccounts, setUpdatedAccounts] = useState<Account[]>(accounts);
   const [type, setType] = useState('password');
+  const [errors, setErrors] = useState<{
+    name?: string;
+    phoneNumber?: string;
+    email?: string;
+    password?: string;
+  }>({});
 
   const handleUserInputChange = (field: keyof User, value: any) => {
     setUpdatedUser((prevState) => ({
@@ -60,11 +66,18 @@ const Settings: React.FC<Props> = ({ user, accounts }: Props) => {
 
   const handleSubmit = async (event: React.FormEvent) => {
     event.preventDefault();
-    if (updatedAccountStatus) {
-      await updateAccount();
+    setErrors({});
+
+    try {
+      if (updatedAccountStatus) {
+        await updateAccount();
+      }
+      await updateUser();
+      console.log('Updated User:', updatedUser);
+    } catch (error: any) {
+      const errors = validateUserInput(updatedUser);
+      setErrors(errors);
     }
-    await updateUser();
-    console.log('Updated User:', updatedUser);
   };
 
   useEffect(() => {
@@ -81,14 +94,63 @@ const Settings: React.FC<Props> = ({ user, accounts }: Props) => {
     }
   };
 
+  function validatePhone(phone: string): boolean {
+      const phonePattern = /^(?:(?:\+32|0)\s?)?(?:[1-9]{1}\d{1})(?:[\s.-]?\d{2,3}){3}$/;
+
+      return phonePattern.test(phone);
+  }
+
+  function emailPattern(email: string): boolean {
+      const emailPattern = /^[a-zA-Z0-9._%+-]+@[a-zA-Z0-9.-]+\.[a-zA-Z]{2,}$/;
+
+      return emailPattern.test(email);
+  }
+
+  function validateUserInput(user: User) {
+    const newErrors: any = {};
+
+    if (!user.name?.trim()) {
+        newErrors.name = 'Name cannot be empty.';
+    }
+
+    if (!user.phoneNumber?.trim()) {
+      newErrors.phoneNumber = 'Phone number cannot be empty.';
+    } else if (!validatePhone(user.phoneNumber)) {
+      newErrors.phoneNumber =  'Phone pattern is not valid.';
+    }
+
+    if (!user.email?.trim()) {
+        newErrors.email =  'Email cannot be empty.';
+    } else if (!emailPattern(user.email)) {
+      newErrors.email = 'Email pattern is not valid.';
+    }
+
+    // Validate password
+    if (!user.password?.trim()) {
+        newErrors.password = 'Password cannot be empty.';
+    } else if (user.password.length < 8) {
+      newErrors.password = 'Password must be at least 8 characters long.';
+    } else if (!/[A-Z]/.test(user.password)) {
+      newErrors.password = 'Password must contain at least one uppercase letter.';
+    } else if (!/[a-z]/.test(user.password)) {
+      newErrors.password = 'Password must contain at least one lowercase letter.';
+    } else if (!/[0-9]/.test(user.password)) {
+      newErrors.password = 'Password must contain at least one number.';
+    } else if (!/[!@#\$%\^&\*]/.test(user.password)) {
+      newErrors.password = 'Password must contain at least one special character (!@#$%^&*).';
+    }
+
+    return newErrors;
+}
+
   return (
     <>
       {updatedUser  && (
-      <form onSubmit={handleSubmit}>
-        <div>
+      <form onSubmit={handleSubmit} className={styles.form}>
+        <div className={styles.settingsContainer}>
           <h1>Profile Details</h1>
-          <h2>User Details</h2>
             <section className={styles.userDetails}>
+              <h2>User Details</h2>
               <table>
                 <tbody>
                   <tr>
@@ -103,6 +165,7 @@ const Settings: React.FC<Props> = ({ user, accounts }: Props) => {
                         onClick={() => handleUserInputChange("name", '')}
                         onBlur={() => {if (updatedUser.name === '') handleUserInputChange("name", user.name)}} 
                       />
+                      {errors.name && <p className={styles.error}>{errors.name}</p>}
                     </td>
                   </tr>
                   <tr>
@@ -117,6 +180,7 @@ const Settings: React.FC<Props> = ({ user, accounts }: Props) => {
                         onClick={() => handleUserInputChange("phoneNumber", '')}
                         onBlur={() => {if (updatedUser.phoneNumber === '') handleUserInputChange("phoneNumber", user.phoneNumber)}}
                       />
+                      {errors.phoneNumber && <p className={styles.error}>{errors.phoneNumber}</p>}
                     </td>
                   </tr>
                   <tr>
@@ -131,6 +195,7 @@ const Settings: React.FC<Props> = ({ user, accounts }: Props) => {
                         onClick={() => handleUserInputChange("email", '')}
                         onBlur={() => {if (updatedUser.email === '') handleUserInputChange("email", user.email)}}
                       />
+                      {errors.email && <p className={styles.error}>{errors.email}</p>}
                     </td>
                   </tr>
                   <tr>
@@ -153,6 +218,7 @@ const Settings: React.FC<Props> = ({ user, accounts }: Props) => {
                         onClick={() => handleUserInputChange("password", '')}
                         onBlur={() => { if (updatedUser.password === '') handleUserInputChange("password", user.password)}}
                       />
+                      {errors.password && <p className={styles.error}>{errors.password}</p>}
                       <input type="checkbox" onClick={togglePassword}/>
                     </td>
                   </tr>
