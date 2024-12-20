@@ -1,6 +1,4 @@
 import { User } from '../model/user';
-import { Account } from '../model/account';
-import { Transaction } from '../model/transaction';
 import database from '../util/database';
 
 const getAllUsers = async (): Promise<User[]> => {
@@ -18,7 +16,7 @@ const createUser = async (user: User): Promise<User> => {
             nationalRegisterNumber: user.getNationalRegisterNumber(),
             name: user.getName(),
             birthDate: user.getBirthDate(),
-            isAdministrator: user.getIsAdministrator(),
+            role: user.getRole(),
             phoneNumber: user.getPhoneNumber(),
             email: user.getEmail(),
             password: user.getPassword(),
@@ -29,7 +27,7 @@ const createUser = async (user: User): Promise<User> => {
                 nationalRegisterNumber: user.getNationalRegisterNumber(),
                 name: user.getName(),
                 birthDate: user.getBirthDate(),
-                isAdministrator: user.getIsAdministrator(),
+                role: user.getRole(),
                 phoneNumber: user.getPhoneNumber(),
                 email: user.getEmail(),
                 password: user.getPassword(),
@@ -93,7 +91,7 @@ const updateUser = async (updatedUser: User): Promise<User> => {
                 nationalRegisterNumber: updatedUser.getNationalRegisterNumber(),
                 name: updatedUser.getName(),
                 birthDate: updatedUser.getBirthDate(),
-                isAdministrator: updatedUser.getIsAdministrator(),
+                role: updatedUser.getRole(),
                 phoneNumber: updatedUser.getPhoneNumber(),
                 email: updatedUser.getEmail(),
                 password: updatedUser.getPassword(),

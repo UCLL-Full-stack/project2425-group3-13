@@ -12,7 +12,7 @@ model User {
   nationalRegisterNumber String    @unique
   name                   String
   birthDate              DateTime
-  isAdministrator        Boolean
+  role                   Role
   phoneNumber            String
   email                  String    @unique
   password               String
@@ -49,4 +49,10 @@ model Transaction {
 enum TransactionType {
   income
   expense
+}
+
+enum Role {
+  user
+  admin
+  bank
 }

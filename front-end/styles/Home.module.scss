@@ -223,3 +223,18 @@
     }
   }
 }
+
+.table {
+  width: 100%;
+  border-collapse: collapse;
+
+  th,
+  td {
+    border: 1px solid #cccccc;
+    padding: 0.5rem;
+  }
+
+  th {
+    background-color: #f9f9f9;
+  }
+}

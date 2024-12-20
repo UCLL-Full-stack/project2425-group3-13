@@ -1,6 +1,6 @@
 import { Account } from '../model/account';
+import { User } from '../model/user';
 import database from '../util/database';
-import userDb from '../repository/user.db';
 
 // const accounts: Account[] = [];
 
@@ -100,10 +100,59 @@ const deleteAccount = async (account: Account): Promise<void> => {
     }
 };
 
+const getAllAccounts = async (): Promise<Account[]> => {
+    try {
+        const accounts = await database.account.findMany();
+        return accounts.map((account) => Account.from(account));
+    } catch (error: any) {
+        throw new Error('Database error. See server log for details.');
+    }
+};
+
+const getAccountsOfUser = async (user: User): Promise<Account[]> => {
+    try {
+        const accounts = await database.account.findMany({
+            where: {
+                users: {
+                    some: {
+                        id: user.getId(),
+                    },
+                },
+            },
+        });
+
+        return accounts.map((account) => Account.from(account));
+    } catch (error: any) {
+        throw new Error('Database error. See server log for details.');
+    }
+};
+
+const getTransactionAccountsOfUser = async (user: User): Promise<Account[]> => {
+    try {
+        const accounts = await database.account.findMany({
+            where: {
+                users: {
+                    some: {
+                        id: user.getId(),
+                    },
+                },
+                type: 'transaction',
+            },
+        });
+
+        return accounts.map((account) => Account.from(account));
+    } catch (error: any) {
+        throw new Error('Database error. See server log for details.');
+    }
+};
+
 export default {
     createAccount,
     getAccountById,
     getAccountByAccountNumber,
     updateAccount,
     deleteAccount,
+    getAllAccounts,
+    getAccountsOfUser,
+    getTransactionAccountsOfUser,
 };

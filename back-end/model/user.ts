@@ -1,5 +1,5 @@
 import { User as UserPrisma, Account as AccountPrisma } from '@prisma/client';
-import { UserInput } from '../types';
+import { UserInput, Role } from '../types';
 import { Account } from './account';
 
 export class User {
@@ -7,7 +7,7 @@ export class User {
     private nationalRegisterNumber: string;
     private name: string;
     private birthDate: Date;
-    private isAdministrator: boolean;
+    private role: Role;
     private phoneNumber: string;
     private email: string;
     private password: string;
@@ -18,7 +18,7 @@ export class User {
         nationalRegisterNumber: string;
         name: string;
         birthDate: Date;
-        isAdministrator: boolean;
+        role: Role;
         phoneNumber: string;
         email: string;
         password: string;
@@ -29,7 +29,7 @@ export class User {
         this.nationalRegisterNumber = user.nationalRegisterNumber;
         this.name = user.name;
         this.birthDate = user.birthDate;
-        this.isAdministrator = user.isAdministrator;
+        this.role = user.role;
         this.phoneNumber = user.phoneNumber;
         this.email = user.email;
         this.password = user.password;
@@ -52,8 +52,8 @@ export class User {
         return this.birthDate;
     }
 
-    getIsAdministrator(): boolean {
-        return this.isAdministrator;
+    getRole(): Role {
+        return this.role;
     }
 
     getPhoneNumber(): string {
@@ -77,7 +77,7 @@ export class User {
         nationalRegisterNumber: string;
         name: string;
         birthDate: Date;
-        isAdministrator: boolean;
+        role: Role;
         phoneNumber: string;
         email: string;
         password: string;
@@ -87,7 +87,9 @@ export class User {
         } else if (!this.validateNRN(user.nationalRegisterNumber)) {
             throw new Error('National register number is not correct.');
         }
-
+        if (!user.role) {
+            throw new Error('Role is required.');
+        }
         // Validate name
         if (!user.name?.trim()) {
             throw new Error('Name is required.');
@@ -161,7 +163,7 @@ export class User {
             nationalRegisterNumber: this.nationalRegisterNumber,
             name: this.name,
             birthDate: this.birthDate,
-            isAdministrator: this.isAdministrator,
+            role: this.role,
             phoneNumber: this.phoneNumber,
             email: this.email,
             accounts: this.accounts.map((account) => account.toJSON()),
@@ -190,7 +192,7 @@ export class User {
         nationalRegisterNumber,
         name,
         birthDate,
-        isAdministrator,
+        role,
         phoneNumber,
         email,
         password,
@@ -201,7 +203,7 @@ export class User {
             nationalRegisterNumber,
             name,
             birthDate,
-            isAdministrator,
+            role,
             phoneNumber,
             email,
             password,

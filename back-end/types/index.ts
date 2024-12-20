@@ -1,11 +1,13 @@
 type TransactionType = 'expense' | 'income';
 
+type Role = 'user' | 'admin' | 'bank';
+
 type UserInput = {
     id?: number;
     nationalRegisterNumber: string;
     name: string;
     birthDate: Date;
-    isAdministrator: boolean;
+    role: Role;
     phoneNumber: string;
     email: string;
     password: string;
@@ -50,6 +52,7 @@ type AuthenticationResponse = {
 
 export {
     TransactionType,
+    Role,
     UserInput,
     AccountInput,
     TransactionInput,

@@ -98,7 +98,7 @@ const Settings: React.FC<Props> = ({ user, accounts }: Props) => {
                         type="text"
                         id="name"
                         name="name"
-                        value={updatedUser.name}
+                        value={updatedUser.name || ''}
                         onChange={(e) => handleUserInputChange("name", e.target.value)}
                         onClick={() => handleUserInputChange("name", '')}
                         onBlur={() => {if (updatedUser.name === '') handleUserInputChange("name", user.name)}} 
@@ -112,7 +112,7 @@ const Settings: React.FC<Props> = ({ user, accounts }: Props) => {
                         type="text"
                         id="phoneNumber"
                         name="phoneNumber"
-                        value={updatedUser.phoneNumber}
+                        value={updatedUser.phoneNumber || ''}
                         onChange={(e) => handleUserInputChange("phoneNumber", e.target.value)}
                         onClick={() => handleUserInputChange("phoneNumber", '')}
                         onBlur={() => {if (updatedUser.phoneNumber === '') handleUserInputChange("phoneNumber", user.phoneNumber)}}
@@ -126,7 +126,7 @@ const Settings: React.FC<Props> = ({ user, accounts }: Props) => {
                         type="email"
                         id="email"
                         name="email"
-                        value={updatedUser.email}
+                        value={updatedUser.email || ''}
                         onChange={(e) => handleUserInputChange("email", e.target.value)}
                         onClick={() => handleUserInputChange("email", '')}
                         onBlur={() => {if (updatedUser.email === '') handleUserInputChange("email", user.email)}}
@@ -141,19 +141,21 @@ const Settings: React.FC<Props> = ({ user, accounts }: Props) => {
                     <td>{t("userDetails.birthDate")}:</td>
                     <td>{updatedUser.birthDate ? new Date(updatedUser.birthDate).toISOString().split('T')[0] : ''}</td>
                   </tr>
+                  <tr>
                   <td>Password:</td>
                     <td>
                       <input
                         type={type}
                         id="password"
                         name="password"
-                        value={updatedUser.password}
+                        value={updatedUser.password || ''}
                         onChange={(e) => handleUserInputChange("password", e.target.value)}
                         onClick={() => handleUserInputChange("password", '')}
                         onBlur={() => { if (updatedUser.password === '') handleUserInputChange("password", user.password)}}
                       />
                       <input type="checkbox" onClick={togglePassword}/>
                     </td>
+                  </tr>
                 </tbody>
               </table>
           </section>
@@ -170,18 +172,18 @@ const Settings: React.FC<Props> = ({ user, accounts }: Props) => {
           </thead>
               <tbody>
                 {updatedAccounts && updatedAccounts.length > 0 ? (
-                  updatedAccounts.map((account) => (
+                  updatedAccounts.map((account, index) => (
                     <tr key={account.id} onClick={() => {handleAccountSelection(account)
                       console.log(updatedAccountStatus)}}>
                       <td>{account.accountNumber}</td>
                       <td>{account.balance}</td>
                       <td> 
-                        <label htmlFor="status">Change current status ({account.status}): </label>
+                        <label htmlFor="status">Change current status ({accounts.map((account) => account.status)[index]}): </label>
 
                         <select
                           name="status"
                           id="status"
-                          // value=""
+                          value={account.status}
                           onChange={(e) => handleAccountInputChange("status", e.target.value)}
                           >
                           <option value="Active">Active</option>

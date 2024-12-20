@@ -12,7 +12,7 @@ const UserDetails: React.FC<Props> = ({ user }: Props) => {
     <>
       {user && (
         <div>
-          <h1>{t("userDetails.welcome", { name: user.name })}!</h1>
+          <h1>{t("userDetails.welcome", { name: user.name })}</h1>
           <section className={styles.userDetails}>
             <table>
               <tbody>

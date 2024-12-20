@@ -42,12 +42,13 @@ const getAccountsOfUser = async (email: string): Promise<Account[]> => {
     if (user == null) {
         throw new Error('No user was found.');
     }
-    const accountsOfUser = user.getAccounts();
 
-    if (user.getIsAdministrator() === true) {
-        return accountsOfUser;
-    } else {
-        return accountsOfUser.filter((account) => account.getType() === 'transaction');
+    if (user.getRole() === 'bank') {
+        return accountDb.getAllAccounts();
+    } else if (user.getRole() === 'admin') {
+        return accountDb.getAccountsOfUser(user);
+    } else if (user.getRole() === 'user') {
+        return accountDb.getTransactionAccountsOfUser(user);
     }
 };
 
@@ -57,13 +58,23 @@ const updateAccount = async (email: string, accountInput: AccountInput): Promise
     if (user == null) {
         throw new Error('No user was found.');
     }
-    const accountsOfUser = user.getAccounts();
 
-    const account = accountsOfUser.filter((account) => account.getId() === accountInput.id)[0];
+    let accounts: Account[] = [];
+
+    if (user.getRole() === 'bank') {
+        accounts = await accountDb.getAllAccounts();
+    } else if (user.getRole() === 'admin') {
+        accounts = await accountDb.getAccountsOfUser(user);
+    } else if (user.getRole() === 'user') {
+        accounts = await accountDb.getTransactionAccountsOfUser(user);
+    }
+
+    const account = accounts.filter((account: Account) => account.getId() === accountInput.id)[0];
 
     account.update({
         status: accountInput.status,
     });
+
     return await accountDb.updateAccount(account);
 };
 

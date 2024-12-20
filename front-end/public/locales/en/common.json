@@ -38,11 +38,15 @@
     "deleteAccount": "Delete Account"
     },
   "userDetails": {
-    "welcome": "Welcome {{name}}!",
+    "welcome": "Welcome {{name}}",
     "name": "Name",
     "phoneNumber": "Phone Number",
     "nationalRegisterNumber": "National Register Number",
     "birthDate": "Birth Date",
+    "role": "role",
+    "user": "user",
+    "admin": "admin",
+    "bank": "bank",
     "password": "Password"
     },
     "register": {

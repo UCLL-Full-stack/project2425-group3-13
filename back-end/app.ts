@@ -11,6 +11,7 @@ import { expressjwt } from 'express-jwt';
 import helmet from 'helmet';
 
 const app = express();
+app.use(helmet());
 dotenv.config();
 const port = process.env.APP_PORT || 3000;
 
@@ -57,22 +58,21 @@ app.use((error: Error, req: Request, res: Response, next: NextFunction) => {
 });
 
 // app.use((err: Error, req: Request, res: Response, next: NextFunction) => {
-    // if (error.name === 'UnauthorizedError') {
-    //     res.status(401).json({ status: 'unauthorized', message: error.message });
-    // } else if (err.name === 'CoursesError') {
+// if (error.name === 'UnauthorizedError') {
+//     res.status(401).json({ status: 'unauthorized', message: error.message });
+// } else if (err.name === 'CoursesError') {
 //         res.status(400).json({ status: 'domain error', message: err.message });
 //     } else {
 //         res.status(400).json({ status: 'application error', message: err.message });
 //     }
 // });
 
-app.use((error: Error, req: Request, res: Response, next: NextFunction) => {    
+app.use((error: Error, req: Request, res: Response, next: NextFunction) => {
     res.status(400).json({
         status: 'application error',
         message: error.message,
     });
-}
-);
+});
 
 app.listen(port, () => {
     console.log(`Server is running on port ${port}`);

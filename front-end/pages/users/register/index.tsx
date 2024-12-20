@@ -19,7 +19,7 @@ const RegisterUser: React.FC = () => {
         email: "",
         password: "",
         birthDate: undefined,
-        isAdministrator: false,
+        role: "",
         phoneNumber: ""
     });
     const [errors, setErrors] = useState<{

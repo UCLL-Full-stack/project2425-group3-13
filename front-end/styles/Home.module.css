@@ -194,4 +194,17 @@
 }
 .accountOverview table th {
   background-color: #f9f9f9;
+}
+
+.table {
+  width: 100%;
+  border-collapse: collapse;
+}
+.table th,
+.table td {
+  border: 1px solid #cccccc;
+  padding: 0.5rem;
+}
+.table th {
+  background-color: #f9f9f9;
 }/*# sourceMappingURL=Home.module.css.map */

@@ -41,6 +41,32 @@ const Home: React.FC = () => {
           </ul>
           <p>{t("home.getStarted")}</p>
         </div>
+        <table className={styles.table}>
+        <thead>
+          <tr>
+            <th>Email</th>
+            <th>Password</th>
+            <th>Role</th>
+          </tr>
+        </thead>
+        <tbody>
+          <tr key="alice">
+            <td>alice.johnson@example.com</td>
+            <td>SecureP@ssw0rd</td>
+            <td>user</td>
+          </tr>
+          <tr key="bob">
+            <td>bob.smith@example.com</td>
+            <td>BobP@ss123!</td>
+            <td>admin</td>
+          </tr>
+          <tr key="bank">
+            <td>bank@pft.com</td>
+            <td>Password1!</td>
+            <td>bank</td>
+          </tr>
+        </tbody>
+      </table>
       </main>
       <Footer />
     </>

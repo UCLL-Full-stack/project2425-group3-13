@@ -5,7 +5,7 @@ const user = new User({
     nationalRegisterNumber: '01.01.01-001.01',
     name: 'John Doe',
     birthDate: new Date('1990-01-01T00:00:00.000Z'),
-    isAdministrator: true,
+    role: 'admin',
     phoneNumber: '012345678',
     email: 'john.doe@gmail.com',
     password: 'Password1!',

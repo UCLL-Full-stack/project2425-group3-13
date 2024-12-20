@@ -46,14 +46,18 @@ const RegisterForm: React.FC<Props> = ({ user, handleSubmit, handleInputChange }
                 required
             />
 
-            <label htmlFor="isAdministrator">Is Administrator <sup>*</sup></label>
-            <input 
-                type="checkbox"
-                id="isAdministrator"
-                name="isAdministrator"
-                checked={user.isAdministrator}
-                onChange={(e) => handleInputChange("isAdministrator", e.target.checked)}
-            />
+            <label htmlFor="role">{t("userDetails.role")} <sup>*</sup></label>
+            <select
+                id="role"
+                name="role"
+                value={user.role}
+                onChange={(e) => handleInputChange("role", e.target.value)}
+                required
+            >
+                <option value="user">{t("userDetails.user")}</option>
+                <option value="admin">{t("userDetails.admin")}</option>
+                <option value="bank">{t("userDetails.bank")}</option>
+            </select>
 
             <label htmlFor="phoneNumber">{t("userDetails.phoneNumber")}<sup>*</sup></label>
             <input 
