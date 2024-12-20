@@ -3,6 +3,7 @@ import { Account } from '../model/account';
 import { AccountInput } from '../types/index';
 import userDb from '../repository/user.db';
 import transactionDb from '../repository/transaction.db';
+import { error } from 'console';
 
 const createAccount = async (accountInput: AccountInput): Promise<Account> => {
     // const { isShared, type } = accountInput;
@@ -24,15 +25,12 @@ const getAccountById = async ({ id }: { id: number }): Promise<Account> => {
 };
 
 const getAccountByAccountNumber = async (accountNumber: string): Promise<Account | null> => {
-    console.log(`Service: Fetching account with account number: ${accountNumber}`);
     const account = await accountDb.getAccountByAccountNumber(accountNumber);
 
     if (account == null) {
-        console.error(`Service: Account with account number ${accountNumber} was not found.`);
-        return null;
+        throw new Error(`Account with ${accountNumber} was not found.`);
     }
 
-    console.log(`Service: Fetched account: ${JSON.stringify(account)}`);
     return account;
 };
 
