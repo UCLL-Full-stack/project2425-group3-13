@@ -5,6 +5,7 @@ import TransactionService from '../../services/TransactionService';
 import styles from '../../styles/Home.module.css';
 import { Account } from '@/types';
 import { create } from 'domain';
+import exp from 'constants';
 
 const CreateExpense: React.FC = () => {
   const [amount, setAmount] = useState<number>(0);
@@ -43,6 +44,8 @@ const CreateExpense: React.FC = () => {
           setError('Destination Account Number is required.');
         } else if (!destinationAccount) {
           setError("Destination Account is not found.")
+        } else if (expenseData.amount <= 0) {
+          setError('Amount must be greater than 0.');
         } else {
           setError(`Account is blocked or closed, no transactions can be made or received.`);
         }

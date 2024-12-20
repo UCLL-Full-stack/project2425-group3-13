@@ -273,7 +273,7 @@ test('given: insufficient funds for expense, when: creating a expense, then: an 
     expect(createExpense).toThrow('Insufficient funds.');
 });
 
-test('given: insufficient funds for expense, when: creating a expense, then: an error is thrown', () => {
+test('given: same source and destination, when: creating a expense, then: an error is thrown', () => {
     // Given
     const sourceAccount = new Account({
         isShared: false,
@@ -295,4 +295,33 @@ test('given: insufficient funds for expense, when: creating a expense, then: an 
 
     // Then
     expect(createExpense).toThrow('Source and destination accounts must be different.');
+});
+
+test('given: negative amount, when: creating a expense, then: an error is thrown', () => {
+    // Given
+    const sourceAccount = new Account({
+        isShared: false,
+        type: 'savings',
+        balance: 100,
+        users: [user],
+    });
+    const destinationAccount = new Account({
+        isShared: false,
+        type: 'transaction',
+        users: [user],
+    });
+
+    // When
+    const createExpense = () => {
+        new Transaction({
+            amount: -1,
+            currency: 'EUR',
+            sourceAccount,
+            destinationAccount,
+            type: 'expense',
+        });
+    };
+
+    // Then
+    expect(createExpense).toThrow('Amount must be greater than or equal to 0.');
 });

@@ -104,6 +104,9 @@ export class Account {
     // }
 
     calculateBalance(amount: number, type: string): number {
+        if (amount < 0) {
+            throw new Error('Amount must be greater than or equal to 0.');
+        }
         if (type === 'income') {
             return (this.balance += amount);
         } else if (type === 'expense') {
@@ -119,7 +122,6 @@ export class Account {
             throw new Error('Transaction type must be either "income" or "expense".');
         }
     }
-
 
     update(accountInput: Partial<AccountInput>) {
         if (accountInput.status) this.status = accountInput.status;
@@ -149,9 +151,7 @@ export class Account {
 
         const validAccountTypes = ['transaction', 'savings'];
         if (!validAccountTypes.includes(account.type)) {
-            throw new Error(
-                'Invalid account type. Valid types are: transaction and savings'
-            );
+            throw new Error('Invalid account type. Valid types are: transaction and savings');
         }
     }
 
