@@ -7,6 +7,8 @@ import { AccountInput, UserInput } from '../../types';
 import bcrypt from 'bcrypt';
 import accountDb from '../../repository/account.db';
 
+const password = 'Password1!';
+const hashedPasswd = bcrypt.hashSync(password, 10);
 
 const accountInput: AccountInput = {
     accountNumber: '20241104-SAV-370',
@@ -31,7 +33,7 @@ const userInput: UserInput = {
     isAdministrator: false,
     phoneNumber: '0123456789',
     email: 'john.doe@gmail.com',
-    password: 'Password1!',
+    password: hashedPasswd,
     accounts: []    
 };
 
@@ -42,7 +44,7 @@ const userInputWithAccount: UserInput = {
     isAdministrator: false,
     phoneNumber: '0123456789',
     email: 'john.doe@gmail.com',
-    password: 'Password1!',
+    password: hashedPasswd,
     accounts: [accountInput]    
 };
 
@@ -52,7 +54,7 @@ const user = new User({
 });
 
 const userWithAccount = new User({
-    ...userInput,
+    ...userInputWithAccount,
     accounts: [account],
 })
 
@@ -70,8 +72,7 @@ beforeEach(() => {
     mockAccountDbGetAccountByAccountNumber = jest.fn();
     
     jest.mock('bcryptjs', () => ({
-        ...jest.requireActual('bcryptjs'),  // Keep the rest of the methods
-        compare: jest.fn().mockResolvedValue(true),  // Mock compare to always return true
+        compare: jest.fn(),
     }));
 });
 
@@ -116,14 +117,16 @@ test('given: a valid email and password, when: trying to authenticate a user, th
     // Given
     userDb.getUserByEmail = mockUserDbGetUserByEmail.mockResolvedValue(user);
     // (bcrypt.compare as jest.Mock).mockResolvedValue(true);
-    
+    const isPasswordValid = await bcrypt.compare(userInput.password, user.getPassword());
+
     // When
     const result = await userService.authenticate(userInput);
 
     // Then
     expect(mockUserDbGetUserByEmail).toHaveBeenCalledTimes(1);
     expect(mockUserDbGetUserByEmail).toHaveBeenCalledWith(userInput.email);
-    expect(bcrypt.compare).toHaveBeenCalledWith(userInput.password, user.getPassword());
+    expect(isPasswordValid === true);
+    expect(bcrypt.compare).toHaveBeenCalledWith(hashedPasswd, user.getPassword());
     expect(result).toEqual({
         token: expect.anything(), 
         id: user.getId(),
