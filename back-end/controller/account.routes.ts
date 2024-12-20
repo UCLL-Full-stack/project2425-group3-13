@@ -150,8 +150,6 @@ accountRouter.get(
     }
 );
 
-
-
 /**
  * @swagger
  * /account:
@@ -174,16 +172,19 @@ accountRouter.get(
  *         description: No accounts found for the user.
  *       500:
  *         description: Internal server error.
- */accountRouter.get('/', async (req: Request & { auth: any}, res: Response, next: NextFunction) => {
-    try { 
-        const request = req as Request & { auth: { email: string } };
-        const { email } = request.auth;
-        const accounts = await accountService.getAccountsOfUser(email);
-        res.status(200).json(accounts);
-    } catch (error: any) {
-        next(error);
+ */ accountRouter.get(
+    '/',
+    async (req: Request & { auth: any }, res: Response, next: NextFunction) => {
+        try {
+            const request = req as Request & { auth: { email: string } };
+            const { email } = request.auth;
+            const accounts = await accountService.getAccountsOfUser(email);
+            res.status(200).json(accounts);
+        } catch (error: any) {
+            next(error);
+        }
     }
-});
+);
 
 /**
  * @swagger
@@ -214,13 +215,42 @@ accountRouter.get(
  *       500:
  *         description: Internal server error.
  */
-accountRouter.put('/', async (req: Request & { auth: any}, res: Response, next: NextFunction) => {
+accountRouter.put('/', async (req: Request & { auth: any }, res: Response, next: NextFunction) => {
     try {
         const request = req as Request & { auth: { email: string } };
         const { email } = request.auth;
         const accountInput = <AccountInput>req.body;
         const updatedAccount = await accountService.updateAccount(email, accountInput);
         res.status(200).json(updatedAccount);
+    } catch (error: any) {
+        next(error);
+    }
+});
+
+/**
+ * @swagger
+ * /account/{accountNumber}:
+ *   delete:
+ *     summary: Delete account by account number.
+ *     security:
+ *       - bearerAuth: []
+ *     parameters:
+ *       - in: path
+ *         name: accountNumber
+ *         schema:
+ *           type: string
+ *           required: true
+ *     responses:
+ *       200:
+ *         description: Account deleted successfully.
+ *       400:
+ *         description: Bad request.
+ */
+accountRouter.delete('/:accountNumber', async (req: Request, res: Response, next: NextFunction) => {
+    try {
+        const accountNumber = req.params.accountNumber;
+        await accountService.deleteAccount(accountNumber);
+        res.status(200).json({ message: 'Account deleted successfully' });
     } catch (error: any) {
         next(error);
     }

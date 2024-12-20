@@ -1,6 +1,7 @@
 import { PrismaClient } from '@prisma/client';
 import { Account } from '../model/account';
 import { Transaction } from '../model/transaction';
+import { de } from 'date-fns/locale';
 
 const database = new PrismaClient();
 
@@ -110,4 +111,27 @@ const filterTransactionsByAccount = async (
     }
 };
 
-export default { createTransaction, getTransactionsByAccount, filterTransactionsByAccount };
+const deleteTransaction = async (transaction: Transaction): Promise<Transaction> => {
+    try {
+        const deletedTransaction = await database.transaction.delete({
+            where: {
+                id: transaction.getId(),
+            },
+            include: {
+                sourceAccount: true,
+                destinationAccount: true,
+            },
+        });
+
+        return Transaction.from(deletedTransaction);
+    } catch (error: any) {
+        throw new Error('Database error. See server log for details.');
+    }
+};
+
+export default {
+    createTransaction,
+    getTransactionsByAccount,
+    filterTransactionsByAccount,
+    deleteTransaction,
+};

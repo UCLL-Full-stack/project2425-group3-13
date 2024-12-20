@@ -74,16 +74,33 @@ export class Transaction {
         return this.type;
     }
 
-    validate(transaction: { amount: number; currency: string; id?: number }) {
-        if (transaction.amount <= 0) {
+    validate(transaction: {
+        amount: number;
+        currency: string;
+        sourceAccount: Account;
+        destinationAccount: Account;
+        id?: number;
+    }) {
+        if (transaction.amount === undefined) {
+            throw new Error('Amount is required.');
+        } else if (transaction.currency === undefined) {
+            throw new Error('Currency is required.');
+        } else if (transaction.sourceAccount === undefined) {
+            throw new Error('Source account is required.');
+        } else if (transaction.destinationAccount === undefined) {
+            throw new Error('Destination account is required.');
+        } else if (transaction.amount <= 0) {
             throw new Error('Amount must be greater than 0.');
-        }
-        if (
+        } else if (
             transaction.currency !== 'USD' &&
             transaction.currency !== 'EUR' &&
             transaction.currency !== 'GBP'
         ) {
             throw new Error('Currency must be either USD, EUR or GBP.');
+        } else if (transaction.destinationAccount === transaction.sourceAccount) {
+            throw new Error('Source and destination accounts must be different.');
+        } else if (transaction.sourceAccount.getBalance() - transaction.amount < 0) {
+            throw new Error('Insufficient funds.');
         }
     }
 

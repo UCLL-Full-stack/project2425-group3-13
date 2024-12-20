@@ -26,7 +26,8 @@
     "balance": "Saldo",
     "startDate": "Startdatum",
     "endDate": "Einddatum",
-    "noAccounts": "U heeft momenteel geen rekeningen."
+    "noAccounts": "U heeft momenteel geen rekeningen.",
+    "deleteAccount": "Verwijder account"
   },
   "userDetails": {
     "welcome": "Welkom {{name}}!",

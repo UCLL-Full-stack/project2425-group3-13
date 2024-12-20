@@ -83,9 +83,27 @@ const updateAccount = async (account: Account): Promise<Account> => {
         return Account.from(accountPrisma);
     } catch (error: any) {
         // throw new Error('Database error. See server log for details.');
-        
+
         throw new Error(`Database error: ${error.message}`);
     }
 };
 
-export default { createAccount, getAccountById, getAccountByAccountNumber, updateAccount };
+const deleteAccount = async (account: Account): Promise<void> => {
+    try {
+        await database.account.delete({
+            where: {
+                id: account.getId(),
+            },
+        });
+    } catch (error: any) {
+        throw new Error('Database error. See server log for details.');
+    }
+};
+
+export default {
+    createAccount,
+    getAccountById,
+    getAccountByAccountNumber,
+    updateAccount,
+    deleteAccount,
+};

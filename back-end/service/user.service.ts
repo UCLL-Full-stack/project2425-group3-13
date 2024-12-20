@@ -9,7 +9,9 @@ import { generateJwtToken } from '../util/jwt';
 const getAllUsers = async (): Promise<User[]> => userDb.getAllUsers();
 
 const createUser = async (userInput: UserInput): Promise<User> => {
-    const existingUser = await userDb.getUserByNationalRegisterNumber(userInput.email);
+    const existingUser = await userDb.getUserByNationalRegisterNumber(
+        userInput.nationalRegisterNumber
+    );
 
     if (existingUser != null) {
         throw new Error(
@@ -21,7 +23,7 @@ const createUser = async (userInput: UserInput): Promise<User> => {
     const newUser = new User({
         nationalRegisterNumber: userInput.nationalRegisterNumber,
         name: userInput.name,
-        birthDate: userInput.birthDate,
+        birthDate: new Date(userInput.birthDate),
         isAdministrator: userInput.isAdministrator,
         phoneNumber: userInput.phoneNumber,
         email: userInput.email,

@@ -143,7 +143,6 @@ export class Account {
         if (account.balance && account.balance < 0) {
             throw new Error('Balance must be greater than or equal to 0.');
         }
-
         if (!account.type) {
             throw new Error('Account type is required.');
         }

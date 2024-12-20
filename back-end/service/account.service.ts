@@ -2,6 +2,7 @@ import accountDb from '../repository/account.db';
 import { Account } from '../model/account';
 import { AccountInput } from '../types/index';
 import userDb from '../repository/user.db';
+import transactionDb from '../repository/transaction.db';
 
 const createAccount = async (accountInput: AccountInput): Promise<Account> => {
     // const { isShared, type } = accountInput;
@@ -37,14 +38,14 @@ const getAccountByAccountNumber = async (accountNumber: string): Promise<Account
 
 const getAccountsOfUser = async (email: string): Promise<Account[]> => {
     const user = await userDb.getUserByEmail(email);
-    
+
     if (user == null) {
-        throw new Error('No user was found.')
+        throw new Error('No user was found.');
     }
     const accountsOfUser = user.getAccounts();
 
     if (user.getIsAdministrator() === true) {
-        return accountsOfUser;    
+        return accountsOfUser;
     } else {
         return accountsOfUser.filter((account) => account.getType() === 'transaction');
     }
@@ -54,17 +55,43 @@ const updateAccount = async (email: string, accountInput: AccountInput): Promise
     const user = await userDb.getUserByEmail(email);
 
     if (user == null) {
-        throw new Error('No user was found.')
+        throw new Error('No user was found.');
     }
     const accountsOfUser = user.getAccounts();
 
     const account = accountsOfUser.filter((account) => account.getId() === accountInput.id)[0];
 
     account.update({
-        status: accountInput.status
+        status: accountInput.status,
     });
-    return await accountDb.updateAccount(account);    
-    
+    return await accountDb.updateAccount(account);
 };
 
-export default { createAccount, getAccountById, getAccountByAccountNumber, getAccountsOfUser, updateAccount };
+const deleteAccount = async (accountNumber: string): Promise<void> => {
+    const account = await accountDb.getAccountByAccountNumber(accountNumber);
+
+    if (account == null) {
+        throw new Error(`Account with account number ${accountNumber} was not found.`);
+    }
+
+    for (const user of account.getUsers()) {
+        user.removeAccount(account);
+    }
+
+    const transactions = await transactionDb.getTransactionsByAccount(account);
+
+    for (const transaction of transactions) {
+        await transactionDb.deleteTransaction(transaction);
+    }
+
+    return await accountDb.deleteAccount(account);
+};
+
+export default {
+    createAccount,
+    getAccountById,
+    getAccountByAccountNumber,
+    getAccountsOfUser,
+    updateAccount,
+    deleteAccount,
+};

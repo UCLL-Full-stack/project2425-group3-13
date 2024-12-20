@@ -175,6 +175,16 @@ export class User {
         if (userInput.password) this.password = userInput.password;
     }
 
+    removeAccount(account: Account): void {
+        const accountIndex = this.accounts.findIndex(
+            (account) => account.getAccountNumber() === account.getAccountNumber()
+        );
+        if (accountIndex === -1) {
+            throw new Error(`Account with account number ${account.getAccountNumber()} not found.`);
+        }
+        this.accounts.splice(accountIndex, 1);
+    }
+
     static from({
         id,
         nationalRegisterNumber,

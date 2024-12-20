@@ -36,7 +36,6 @@ const CreateExpense: React.FC = () => {
         const result = await TransactionService.createExpense(accountNumber as string, expenseData);
         console.log(`Expense created successfully with body: ${JSON.stringify(expenseData)}`);
         alert('Expense created successfully!');
-        setRedirect(true);
         router.push(`/transactions/overview/account/${sourceAccount.id}`);
       } catch (error: any) {
         console.error('An error occurred while creating the expense:', error);
@@ -53,10 +52,6 @@ const CreateExpense: React.FC = () => {
       return;
     }
   };
-
-  if (redirect) {
-    return null;
-  }
 
   return (
     <form onSubmit={handleSubmit} className={styles.form}>
