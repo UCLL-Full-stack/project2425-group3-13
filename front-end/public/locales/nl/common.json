@@ -38,7 +38,7 @@
     "nationalRegisterNumber": "Rijksregisternummer",
     "birthDate": "Geboortedatum",
     "role": "rol",
-    "user": "gebruiker",
+    "user": "user",
     "admin": "admin",
     "bank": "bank",
     "password": "Wachtwoord",
