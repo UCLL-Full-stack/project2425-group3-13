@@ -5,7 +5,7 @@
   "scripts": {
     "dev": "next dev -p 8080",
     "build": "next build",
-    "start": "npm start",
+    "start": "npm run dev",
     "test": "jest"
   },
   "dependencies": {
