@@ -3,6 +3,8 @@ import { useRouter } from 'next/router';
 import AccountService from '../../services/AccountService';
 import TransactionService from '../../services/TransactionService';
 import styles from '../../styles/Home.module.css';
+import { Account } from '@/types';
+import { create } from 'domain';
 
 const CreateExpense: React.FC = () => {
   const [amount, setAmount] = useState<number>(0);
@@ -22,6 +24,12 @@ const CreateExpense: React.FC = () => {
       destinationAccountNumber,
     };
 
+    let destinationAccount: Account | undefined;
+    if (destinationAccountNumber.trim().length !== 0) {
+      const account = await AccountService.getAccountByAccountNumber(destinationAccountNumber);
+      destinationAccount = account;
+    }
+
     if (typeof accountNumber === 'string') {
       try {
         const sourceAccount = await AccountService.getAccountByAccountNumber(accountNumber);
@@ -31,10 +39,16 @@ const CreateExpense: React.FC = () => {
         router.push(`/transactions/overview/account/${sourceAccount.id}`);
       } catch (error: any) {
         console.error('An error occurred while creating the expense:', error);
-        setError(`Account is blocked or closed, no transactions can be made or received.`);
+        if (destinationAccountNumber.trim().length === 0) {
+          setError('Destination Account Number is required.');
+        } else if (!destinationAccount) {
+          setError("Destination Account is not found.")
+        } else {
+          setError(`Account is blocked or closed, no transactions can be made or received.`);
+        }
       }
     } else {
-      console.error('Invalid account number');
+      setError('Invalid account number');
       return;
     }
   };

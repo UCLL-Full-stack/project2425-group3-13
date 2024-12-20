@@ -16,7 +16,13 @@
     "contactUs": "Contact us"
     },
   "error": {
-    "noUserFound": "No user found"
+    "noUserFound": "No user found",
+    "nationalRegisterNumberError": "National register number is required.",
+    "nameError": "Name is required.",
+    "birthDateError": "Birth date cannot be in the future.",
+    "phoneNumberError": "Phone number is required.",
+    "emailError": "Email is required or pattern is not valid.",
+    "passwordError": "Password must be at least 8 characters long, contain at least one uppercase letter, one lowercase letter, one number, and one special character."
     },
   "account": {
     "overviewTitle": "Account Overview"

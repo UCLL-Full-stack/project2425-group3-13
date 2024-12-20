@@ -90,18 +90,18 @@ export class Account {
         return `${today}-${type}-${randomNumbers}`;
     }
 
-    addUser(user: User): void {
-        if (
-            this.users.find(
-                (user) => user.getNationalRegisterNumber() === user.getNationalRegisterNumber()
-            )
-        ) {
-            throw new Error(
-                `User with national register number ${user.getNationalRegisterNumber()} has already been added to this account.`
-            );
-        }
-        this.users.push(user);
-    }
+    // addUser(user: User): void {
+    //     if (
+    //         this.users.find(
+    //             (user) => user.getNationalRegisterNumber() === user.getNationalRegisterNumber()
+    //         )
+    //     ) {
+    //         throw new Error(
+    //             `User with national register number ${user.getNationalRegisterNumber()} has already been added to this account.`
+    //         );
+    //     }
+    //     this.users.push(user);
+    // }
 
     calculateBalance(amount: number, type: string): number {
         if (type === 'income') {
@@ -120,6 +120,7 @@ export class Account {
         }
     }
 
+
     update(accountInput: Partial<AccountInput>) {
         if (accountInput.status) this.status = accountInput.status;
         if (accountInput.status) this.balance = accountInput.balance;
@@ -131,19 +132,26 @@ export class Account {
 
     validate(account: {
         id?: number;
-        accountNumber?: string;
         balance?: number;
         isShared: boolean;
         startDate?: Date;
         endDate?: Date | null;
         status?: string;
         type: string;
+        users?: User[];
     }) {
-        if (account.balance < 0) {
+        if (account.balance && account.balance < 0) {
             throw new Error('Balance must be greater than or equal to 0.');
         }
         if (!account.type) {
             throw new Error('Account type is required.');
+        }
+
+        const validAccountTypes = ['transaction', 'savings'];
+        if (!validAccountTypes.includes(account.type)) {
+            throw new Error(
+                'Invalid account type. Valid types are: transaction and savings'
+            );
         }
     }
 

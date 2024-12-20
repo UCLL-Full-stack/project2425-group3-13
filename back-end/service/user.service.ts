@@ -87,9 +87,6 @@ const addAccount = async (nationalRegisterNumber: string, accountNumber: string)
         throw new Error(`Account with account number ${accountNumber} not found.`);
     }
 
-    // user.addAccount(account);
-    // account.addUser(user);
-
     return await userDb.addAccount(nationalRegisterNumber, accountNumber);
 };
 
@@ -100,11 +97,13 @@ const updateUser = async (nationalRegisterNumber: string, userInput: UserInput):
         throw new Error(`User with national register number ${nationalRegisterNumber} not found.`);
     }
 
+    const hashedPasswd = await bcrypt.hash(userInput.password, 12);
+
     user.update({
         name: userInput.name,
         phoneNumber: userInput.phoneNumber,
         email: userInput.email,
-        password: userInput.password,
+        password: hashedPasswd,
     });
 
     return await userDb.updateUser(user);

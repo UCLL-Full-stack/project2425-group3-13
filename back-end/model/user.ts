@@ -148,14 +148,14 @@ export class User {
         return emailPattern.test(email);
     }
 
-    addAccount(account: Account): void {
-        if (this.accounts.find((acc) => acc.getAccountNumber() === account.getAccountNumber())) {
-            throw new Error(
-                `Account with account number ${account.getAccountNumber()} has already been added to this user.`
-            );
-        }
-        this.accounts.push(account);
-    }
+    // addAccount(account: Account): void {
+    //     if (this.accounts.find((acc) => acc.getAccountNumber() === account.getAccountNumber())) {
+    //         throw new Error(
+    //             `Account with account number ${account.getAccountNumber()} has already been added to this user.`
+    //         );
+    //     }
+    //     this.accounts.push(account);
+    // }
 
     toJSON() {
         return {

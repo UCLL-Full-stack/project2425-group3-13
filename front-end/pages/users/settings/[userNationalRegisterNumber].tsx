@@ -36,14 +36,10 @@ const settings: React.FC = () => {
 
     useEffect(() => {
         fetchUser();
-        // } else {
-        //   console.log("No userNationalRegisterNumber provided");
-        // }
     }, []);
 
     const getAccountsForUser = async () => {
       const accounts = await AccountService.getAccountsForUser();
-      // console.log(accounts)
       return accounts;
     }
     

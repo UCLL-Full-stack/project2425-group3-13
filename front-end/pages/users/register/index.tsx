@@ -22,14 +22,58 @@ const RegisterUser: React.FC = () => {
         role: "",
         phoneNumber: ""
     });
+    const [errors, setErrors] = useState<{
+        nationalRegisterNumber?: string;
+        name?: string;
+        birthDate?: string;
+        phoneNumber?: string;
+        email?: string;
+        password?: string;
+    }>({});
 
     const router = useRouter();
 
+    const validateForm = (user: User) => {
+        const newErrors: any = {};
+
+        if (!user.nationalRegisterNumber.trim()) {
+            newErrors.nationalRegisterNumber = t("userDetails.nationalRegisterNumberError");
+        }
+
+        if (!user.name.trim()) {
+            newErrors.name = t("userDetails.nameError");
+        }
+
+        if (user.birthDate! > new Date()) {
+            newErrors.birthDate = t("userDetails.birthDateError");
+        }
+
+        if (!user.phoneNumber.trim()) {
+            newErrors.phoneNumber = t("userDetails.phoneNumberError");
+        }
+
+        if (!user.email.trim() || !/^[a-zA-Z0-9._%+-]+@[a-zA-Z0-9.-]+\.[a-zA-Z]{2,}$/.test(user.email)) {
+            newErrors.email = t("userDetails.emailError");
+        }
+
+        if (!user.password.trim() || user.password.length < 8 || !/[A-Z]/.test(user.password) || !/[a-z]/.test(user.password) || !/[0-9]/.test(user.password) || !/[!@#\$%\^&\*]/.test(user.password)) {
+            newErrors.password = t("userDetails.passwordError");
+        }
+
+        return newErrors;
+    };
+
+
     const handleSubmit = async (e: { preventDefault: () => void; }) => {
         e.preventDefault();
+        try {
         await UserService.createUser(user);
         alert("User created!");
         router.push("/users/login");
+        } catch (error: any) {
+            const errors = validateForm(user);
+            setErrors(errors);
+        }
     }
 
     const handleInputChange = (field: keyof User, value: any) => {

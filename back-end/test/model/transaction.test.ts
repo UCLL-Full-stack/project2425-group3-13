@@ -7,7 +7,7 @@ const user = new User({
     nationalRegisterNumber: '01.01.01-001.01',
     name: 'John Doe',
     birthDate: new Date('1990-01-01T00:00:00.000Z'),
-    isAdministrator: true,
+    role: 'admin',
     phoneNumber: '012345678',
     email: 'john.doe@gmail.com',
     password: 'Password1!',
@@ -17,11 +17,11 @@ test('given: valid values for expense, when: creating a expense, then: expense i
     // Given
     const sourceAccount = new Account({
         isShared: false,
-        type: 'Savings',
+        type: 'savings',
         balance: 100,
         users: [user],
     });
-    const destinationAccount = new Account({ isShared: false, type: 'Transaction', users: [user] });
+    const destinationAccount = new Account({ isShared: false, type: 'transaction', users: [user] });
 
     // When
     const transaction = new Transaction({
@@ -45,11 +45,11 @@ test('given: zero amount for expense, when: creating a expense, then: an error i
     // Given
     const sourceAccount = new Account({
         isShared: false,
-        type: 'Savings',
+        type: 'savings',
         balance: 100,
         users: [user],
     });
-    const destinationAccount = new Account({ isShared: false, type: 'Transaction', users: [user] });
+    const destinationAccount = new Account({ isShared: false, type: 'transaction', users: [user] });
 
     // When
     const createExpense = () => {
@@ -70,11 +70,11 @@ test('given: negative amount for expense, when: creating a expense, then: an err
     // Given
     const sourceAccount = new Account({
         isShared: false,
-        type: 'Savings',
+        type: 'savings',
         balance: 100,
         users: [user],
     });
-    const destinationAccount = new Account({ isShared: false, type: 'Transaction', users: [user] });
+    const destinationAccount = new Account({ isShared: false, type: 'transaction', users: [user] });
 
     // When
     const createExpense = () => {
@@ -95,11 +95,11 @@ test('given: invalid currency for expense, when: creating a expense, then: an er
     // Given
     const sourceAccount = new Account({
         isShared: false,
-        type: 'Savings',
+        type: 'savings',
         balance: 100,
         users: [user],
     });
-    const destinationAccount = new Account({ isShared: false, type: 'Transaction', users: [user] });
+    const destinationAccount = new Account({ isShared: false, type: 'transaction', users: [user] });
 
     // When
     const createExpense = () => {
@@ -120,7 +120,7 @@ test('given: empty destination for expense, when: creating a expense, then: an e
     // Given
     const sourceAccount = new Account({
         isShared: false,
-        type: 'Savings',
+        type: 'savings',
         balance: 100,
         users: [user],
     });
@@ -144,13 +144,13 @@ test('given: empty amount for expense, when: creating a expense, then: an error 
     // Given
     const sourceAccount = new Account({
         isShared: false,
-        type: 'Savings',
+        type: 'savings',
         balance: 100,
         users: [user],
     });
     const destinationAccount = new Account({
         isShared: false,
-        type: 'Transaction',
+        type: 'transaction',
         users: [user],
     });
 
@@ -173,13 +173,13 @@ test('given: empty currency for expense, when: creating a expense, then: an erro
     // Given
     const sourceAccount = new Account({
         isShared: false,
-        type: 'Savings',
+        type: 'savings',
         balance: 100,
         users: [user],
     });
     const destinationAccount = new Account({
         isShared: false,
-        type: 'Transaction',
+        type: 'transaction',
         users: [user],
     });
 
@@ -202,7 +202,7 @@ test('given: empty source account for expense, when: creating a expense, then: a
     // Given
     const destinationAccount = new Account({
         isShared: false,
-        type: 'Transaction',
+        type: 'transaction',
         users: [user],
     });
 
@@ -225,7 +225,7 @@ test('given: empty source account for expense, when: creating a expense, then: a
     // Given
     const destinationAccount = new Account({
         isShared: false,
-        type: 'Transaction',
+        type: 'transaction',
         users: [user],
     });
 
@@ -248,13 +248,13 @@ test('given: insufficient funds for expense, when: creating a expense, then: an 
     // Given
     const sourceAccount = new Account({
         isShared: false,
-        type: 'Savings',
+        type: 'savings',
         balance: 0,
         users: [user],
     });
     const destinationAccount = new Account({
         isShared: false,
-        type: 'Transaction',
+        type: 'transaction',
         users: [user],
     });
 
@@ -277,7 +277,7 @@ test('given: insufficient funds for expense, when: creating a expense, then: an 
     // Given
     const sourceAccount = new Account({
         isShared: false,
-        type: 'Savings',
+        type: 'savings',
         balance: 100,
         users: [user],
     });
