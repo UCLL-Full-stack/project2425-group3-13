@@ -1,7 +1,6 @@
 import userDb from '../repository/user.db';
 import { User } from '../model/user';
 import { AuthenticationResponse, UserInput } from '../types/index';
-import accountService from './account.service';
 import accountDb from '../repository/account.db';
 import bcrypt from 'bcrypt';
 import { generateJwtToken } from '../util/jwt';
@@ -24,7 +23,7 @@ const createUser = async (userInput: UserInput): Promise<User> => {
         nationalRegisterNumber: userInput.nationalRegisterNumber,
         name: userInput.name,
         birthDate: new Date(userInput.birthDate),
-        isAdministrator: userInput.isAdministrator,
+        role: userInput.role,
         phoneNumber: userInput.phoneNumber,
         email: userInput.email,
         password: hashedPasswd,
@@ -43,7 +42,7 @@ const authenticate = async ({ email, password }: UserInput): Promise<Authenticat
     const isValidPassword = await bcrypt.compare(password, existingUser.getPassword());
 
     if (!isValidPassword) {
-        throw new Error('Incorrect password.');
+        throw new Error('Invalid email or password.');
     }
 
     const token = generateJwtToken({ email });

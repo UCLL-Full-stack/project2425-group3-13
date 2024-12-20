@@ -3,7 +3,7 @@ type User = {
   nationalRegisterNumber: string;
   name: string;
   birthDate?: Date;
-  isAdministrator: boolean;
+  role: string;
   phoneNumber: string;
   email: string;
   password: string;

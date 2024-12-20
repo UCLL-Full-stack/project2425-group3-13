@@ -39,6 +39,7 @@ const main = async () => {
     // Hash passwords
     const alicePassword = await bcrypt.hash('SecureP@ssw0rd', 10);
     const bobPassword = await bcrypt.hash('BobP@ss123!', 10);
+    const bankPassword = await bcrypt.hash('Password1!', 10);
 
     // Create accounts with valid account numbers
     const account1 = await prisma.account.create({
@@ -71,7 +72,7 @@ const main = async () => {
             nationalRegisterNumber: '92.05.24-123.45',
             name: 'Alice Johnson',
             birthDate: birthDate1,
-            isAdministrator: false,
+            role: 'user',
             phoneNumber: '+32475123456',
             email: 'alice.johnson@example.com',
             password: alicePassword,
@@ -81,18 +82,31 @@ const main = async () => {
         },
     });
 
-    const user2 = await prisma.user.create({
+    const admin = await prisma.user.create({
         data: {
             nationalRegisterNumber: '85.12.10-987.65',
             name: 'Bob Smith',
             birthDate: birthDate2,
-            isAdministrator: false,
+            role: 'admin',
             phoneNumber: '+32476123456',
             email: 'bob.smith@example.com',
             password: bobPassword,
             accounts: {
-                connect: [{ id: account2.id }],
+                connect: [{ id: account1.id }, { id: account2.id }],
             },
+        },
+    });
+
+    const bank = await prisma.user.create({
+        data: {
+            nationalRegisterNumber: '01.01.01-111.11',
+            name: 'Bank',
+            birthDate: birthDate2,
+            role: 'bank',
+            phoneNumber: '+32111111111',
+            email: 'bank@pft.com',
+            password: bankPassword,
+            accounts: {},
         },
     });
 

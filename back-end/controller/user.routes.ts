@@ -20,8 +20,8 @@
  *          birthDate:
  *            type: string
  *            format: date
- *          isAdministrator:
- *            type: boolean
+ *          role:
+ *            type: string
  *          phoneNumber:
  *            type: string
  *          email:
@@ -42,8 +42,8 @@
  *          birthDate:
  *            type: string
  *            format: date
- *          isAdministrator:
- *            type: boolean
+ *          role:
+ *            type: string
  *          phoneNumber:
  *            type: string
  *          email:

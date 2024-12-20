@@ -91,6 +91,15 @@ const TransactionOverview: React.FC<TransactionOverviewProps> = ({ type }) => {
             onChange={(e) => setFilterValue(e.target.value)}
             placeholder="Enter filter value"
           />
+        ) : filterOption === 'amount' ? (
+          <input
+            name='filterValue'
+            id='filterValue'
+            type="number"
+            value={filterValue}
+            onChange={(e) => setFilterValue(e.target.value)}
+            placeholder="Enter filter value"
+          />
         ) : (
           <input
             name='filterValue'
