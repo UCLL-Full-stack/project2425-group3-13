@@ -6,9 +6,17 @@ type Props = {
     user: User;
     handleSubmit: (event: React.FormEvent<HTMLFormElement>) => void;
     handleInputChange: (field: keyof User, value: any) => void;
+    errors: {
+        nationalRegisterNumber?: string;
+        name?: string;
+        birthDate?: string;
+        phoneNumber?: string;
+        email?: string;
+        password?: string;
+    };
 }
 
-const RegisterForm: React.FC<Props> = ({ user, handleSubmit, handleInputChange }: Props) => {
+const RegisterForm: React.FC<Props> = ({ user, handleSubmit, handleInputChange, errors }: Props) => {
     const { t } = useTranslation();
     const birthDate = user.birthDate ? (user.birthDate instanceof Date ? user.birthDate : new Date(user.birthDate)) : new Date();
     
@@ -24,6 +32,7 @@ const RegisterForm: React.FC<Props> = ({ user, handleSubmit, handleInputChange }
                 placeholder={t("userDetails.nationalRegisterNumber")}
                 required
             />
+            {errors.nationalRegisterNumber && <p className={styles.error}>{errors.nationalRegisterNumber}</p>}
 
             <label htmlFor="name">{t("userDetails.name")}<sup>*</sup></label>
             <input 
@@ -35,6 +44,7 @@ const RegisterForm: React.FC<Props> = ({ user, handleSubmit, handleInputChange }
                 placeholder={t("userDetails.name")}
                 required
             />
+            {errors.name && <p className={styles.error}>{errors.name}</p>}
 
             <label htmlFor="birthDate">{t("userDetails.birthDate")}<sup>*</sup></label>
             <input 
@@ -45,6 +55,7 @@ const RegisterForm: React.FC<Props> = ({ user, handleSubmit, handleInputChange }
                 onChange={(e) => handleInputChange("birthDate", e.target.value)}
                 required
             />
+            {errors.birthDate && <p className={styles.error}>{errors.birthDate}</p>}
 
             <label htmlFor="role">{t("userDetails.role")} <sup>*</sup></label>
             <select
@@ -69,6 +80,8 @@ const RegisterForm: React.FC<Props> = ({ user, handleSubmit, handleInputChange }
                 placeholder={t("userDetails.phoneNumber")}
                 required
             />
+            {errors.phoneNumber && <p className={styles.error}>{errors.phoneNumber}</p>}
+
 
             <label htmlFor="email">Email <sup>*</sup></label>
             <input 
@@ -81,6 +94,7 @@ const RegisterForm: React.FC<Props> = ({ user, handleSubmit, handleInputChange }
                 autoComplete="email"
                 required
             />
+            {errors.email && <p className={styles.error}>{errors.email}</p>}
 
             <label htmlFor="password">{t("userDetails.password")}<sup>*</sup></label>
             <input 
@@ -93,7 +107,8 @@ const RegisterForm: React.FC<Props> = ({ user, handleSubmit, handleInputChange }
                 autoComplete="new-password"
                 required
             />
-
+            {errors.password && <p className={styles.error}>{errors.password}</p>}
+            
             <button type="submit">{t("submit.register")}</button>
         </form>
     );

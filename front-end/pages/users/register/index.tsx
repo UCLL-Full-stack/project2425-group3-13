@@ -30,13 +30,33 @@ const RegisterUser: React.FC = () => {
         email?: string;
         password?: string;
     }>({});
+    
+    function validateNRN(nrn: string): boolean {
+        // Dagen en maand moet nog gecorrigeerd worden
+        const nrnPattern =
+            /^([0-9]{2})\.([0][1-9]|[1][1_2])\.([0-2][0-9]|[3][01])\-([0-9]{3})\.([0-9]{2})$/;
+
+        return nrnPattern.test(nrn);
+    }
+
+    function validatePhone(phone: string): boolean {
+        const phonePattern = /^(?:(?:\+32|0)\s?)?(?:[1-9]{1}\d{1})(?:[\s.-]?\d{2,3}){3}$/;
+
+        return phonePattern.test(phone);
+    }
+
+    function emailPattern(email: string): boolean {
+        const emailPattern = /^[a-zA-Z0-9._%+-]+@[a-zA-Z0-9.-]+\.[a-zA-Z]{2,}$/;
+
+        return emailPattern.test(email);
+    }
 
     const router = useRouter();
 
     const validateForm = (user: User) => {
         const newErrors: any = {};
 
-        if (!user.nationalRegisterNumber.trim()) {
+        if (!user.nationalRegisterNumber.trim() || !validateNRN(user.nationalRegisterNumber)) {
             newErrors.nationalRegisterNumber = t("userDetails.nationalRegisterNumberError");
         }
 
@@ -48,11 +68,11 @@ const RegisterUser: React.FC = () => {
             newErrors.birthDate = t("userDetails.birthDateError");
         }
 
-        if (!user.phoneNumber.trim()) {
+        if (!user.phoneNumber.trim() || !validatePhone(user.phoneNumber)) {
             newErrors.phoneNumber = t("userDetails.phoneNumberError");
         }
 
-        if (!user.email.trim() || !/^[a-zA-Z0-9._%+-]+@[a-zA-Z0-9.-]+\.[a-zA-Z]{2,}$/.test(user.email)) {
+        if (!user.email.trim() || !emailPattern(user.email)) {
             newErrors.email = t("userDetails.emailError");
         }
 
@@ -66,13 +86,17 @@ const RegisterUser: React.FC = () => {
 
     const handleSubmit = async (e: { preventDefault: () => void; }) => {
         e.preventDefault();
+        setErrors({});
+
         try {
-        await UserService.createUser(user);
-        alert("User created!");
-        router.push("/users/login");
+            await UserService.createUser(user);
+            alert("User created!");
+            console.log(errors)
+            router.push("/users/login");
         } catch (error: any) {
             const errors = validateForm(user);
             setErrors(errors);
+            console.log(errors)
         }
     }
 
@@ -93,7 +117,7 @@ const RegisterUser: React.FC = () => {
                 <h1>{t("register.heading")}</h1>
                 <section>
                     {user && (
-                        <RegisterForm user={user} handleSubmit={handleSubmit} handleInputChange={handleInputChange}/>
+                        <RegisterForm user={user} errors={errors}  handleSubmit={handleSubmit} handleInputChange={handleInputChange}/>
                     )}
                 </section>
             </main>
