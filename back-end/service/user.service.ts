@@ -97,6 +97,8 @@ const updateUser = async (nationalRegisterNumber: string, userInput: UserInput):
         throw new Error(`User with national register number ${nationalRegisterNumber} not found.`);
     }
 
+    user.validateUserInput(userInput);
+
     const hashedPasswd = await bcrypt.hash(userInput.password, 12);
 
     user.update({
