@@ -151,6 +151,14 @@
   color: red;
   text-align: left;
 }
+.form .userDetails {
+  margin-top: 15px;
+  max-width: 800px;
+}
+.form .accountOverview {
+  margin-top: 15px;
+  max-width: 800px;
+}
 
 .userDetails {
   padding: 1rem;

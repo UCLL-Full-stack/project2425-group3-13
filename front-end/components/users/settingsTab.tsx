@@ -146,11 +146,11 @@ const Settings: React.FC<Props> = ({ user, accounts }: Props) => {
   return (
     <>
       {updatedUser  && (
-      <form onSubmit={handleSubmit}>
-        <div>
+      <form onSubmit={handleSubmit} className={styles.form}>
+        <div className={styles.settingsContainer}>
           <h1>Profile Details</h1>
-          <h2>User Details</h2>
             <section className={styles.userDetails}>
+              <h2>User Details</h2>
               <table>
                 <tbody>
                   <tr>
