@@ -2,7 +2,6 @@ import React from 'react';
 import { render, screen, fireEvent } from '@testing-library/react';
 import AccountOverview from '@/components/accounts/AccountOverview';
 import { Account } from '@/types';
-import '@testing-library/jest-dom/extend-expect';
 import { useRouter } from 'next/router';
 
 jest.mock('next/router', () => ({

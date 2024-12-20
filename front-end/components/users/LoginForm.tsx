@@ -25,7 +25,8 @@ const LoginForm: React.FC = () => {
         id: user.id,
         username: user.name,
         email: user.email,
-        nationalRegisterNumber: user.nationalRegisterNumber
+        nationalRegisterNumber: user.nationalRegisterNumber,
+        role: user.role
       }));
 
       alert("Login successful!");
